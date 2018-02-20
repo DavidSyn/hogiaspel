@@ -14,17 +14,19 @@ namespace HogiaSpel.Entities
         {
             _inputHandler = new InputHandler();
             Id = Guid.NewGuid();
-            Position = position;
+            Active = true;
             Speed = 140;
 
             var sprites = Sprites.Instance;
-            SpriteName = "Sprite";
-            Sprite = sprites.GetSprite(SpriteName);
+            SpriteName = "PlayerAvatar";
+            SpriteHandler = new SpriteHandler(sprites.GetSprite(SpriteName), position);
+            SpriteHandler.InitializeAnimation("run-right", 64, 64, 4, 80, Color.White, 1f, true);
+            SpriteHandler.Initialize("run-right");
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Sprite, Position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            SpriteHandler.Draw(spriteBatch);
         }
 
         public void Update(GameTime gameTime)
@@ -37,6 +39,7 @@ namespace HogiaSpel.Entities
                     Move(gameTime, (MoveEvent)inputs[i]);
                 }
             }
+            SpriteHandler.Update(gameTime);
         }
 
         private void Move(GameTime gameTime, MoveEvent moveEvent)

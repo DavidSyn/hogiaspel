@@ -60,7 +60,7 @@ namespace HogiaSpel
 
             // TODO: use this.Content to load your game content here
             var sprites = Sprites.Instance;
-            sprites.Load("Sprite", Content.Load<Texture2D>("sprites/Sprite"));
+            sprites.Load("PlayerAvatar", Content.Load<Texture2D>("sprites/qoute"));
 
             var entities = EntityList.Instance;
             var playerAvatar = new PlayerAvatar();

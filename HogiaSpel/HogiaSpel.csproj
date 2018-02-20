@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Animation.cs" />
+    <Compile Include="SpriteHandler.cs" />
     <Compile Include="Sprites.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Entities\AbstractEntity.cs" />

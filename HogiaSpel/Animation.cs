@@ -22,7 +22,7 @@ namespace HogiaSpel
         private Rectangle _destinationRect = new Rectangle();
         
 
-        public void Initialize(Texture2D spriteStrip, Vector2 position, int frameWidth, int frameHeight, int frameCount, int frametime, Color color, float scale, bool looping)
+        public Animation(Texture2D spriteStrip, Vector2 position, int frameWidth, int frameHeight, int frameCount, int frametime, Color color, float scale, bool looping)
         {
             _spriteStrip = spriteStrip;
             _frameCount = frameCount;
@@ -36,11 +36,12 @@ namespace HogiaSpel
             FrameHeight = frameHeight;
             Looping = looping;
             Position = position;
-            Active = true;
+            Active = false;
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Vector2 position)
         {
+            Position = position;
             if (Active == false) return;
 
             _elapsedTime += (int)gameTime.ElapsedGameTime.TotalMilliseconds;
