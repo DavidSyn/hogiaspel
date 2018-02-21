@@ -3,6 +3,8 @@ using HogiaSpel.Events;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HogiaSpel.Entities
 {
@@ -21,7 +23,8 @@ namespace HogiaSpel.Entities
             SpriteName = "PlayerAvatar";
             SpriteHandler = new SpriteHandler(sprites.GetSprite(SpriteName), position);
             SpriteHandler.InitializeAnimation("run-right", 64, 64, 4, 80, Color.White, 1f, true);
-            SpriteHandler.Initialize("run-right");
+            SpriteHandler.InitializeAnimation("stand-right", 64, 64, 1, 80, Color.White, 1f, true);
+            SpriteHandler.Initialize("stand-right");
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -31,14 +34,25 @@ namespace HogiaSpel.Entities
 
         public void Update(GameTime gameTime)
         {
-            var inputs = _inputHandler.HandleInputs();
-            for (int i = 0; i < inputs.Count; i++)
+            _inputHandler.HandleInputs();
+            if (!_inputHandler.NewEvents.Any(x => x is MoveEvent))
             {
-                if (inputs[i] is MoveEvent)
+                if (_inputHandler.OldEvents.Any(x => x is MoveEvent))
                 {
-                    Move(gameTime, (MoveEvent)inputs[i]);
+                    SpriteHandler.ChangeState("stand-right");
                 }
             }
+            else
+            {
+                for (int i = 0; i < _inputHandler.NewEvents.Count; i++)
+                {
+                    if (_inputHandler.NewEvents[i] is MoveEvent)
+                    {
+                        Move(gameTime, (MoveEvent)_inputHandler.NewEvents[i]);
+                    }
+                }
+            }
+            
             SpriteHandler.Update(gameTime);
         }
 
@@ -54,6 +68,12 @@ namespace HogiaSpel.Entities
                     break;
                 case DirectionEnum.Right:
                     MoveRight(gameTime);
+                    
+                    if (_inputHandler.OldEvents.Any(x => x is MoveEvent))
+                    {
+                        SpriteHandler.ChangeState("run-right");
+                    }
+                    
                     break;
                 case DirectionEnum.Left:
                     MoveLeft(gameTime);
@@ -62,7 +82,5 @@ namespace HogiaSpel.Entities
                     throw new Exception("Error: Invalid direction on event");
             }
         }
-
-        
     }
 }

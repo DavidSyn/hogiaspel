@@ -34,6 +34,13 @@ namespace HogiaSpel
             Animations[_currentState].Active = true;
         }
 
+        public void ChangeState(string newState)
+        {
+            Animations[_currentState].Active = false;
+            _currentState = newState;
+            Animations[_currentState].Active = true;
+        }
+
         public void Update(GameTime gameTime)
         {
             Animations[_currentState].Update(gameTime, Position);

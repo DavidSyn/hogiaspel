@@ -7,47 +7,58 @@ namespace HogiaSpel
 {
     public class InputHandler
     {
-        private KeyboardState _keyboardState;
+        public List<IEvent> OldEvents { get; protected set; }
+        public List<IEvent> NewEvents { get; protected set; }
+        private KeyboardState _currentKeyboardState;
 
         public InputHandler()
         {
-            _keyboardState = Keyboard.GetState();
+            _currentKeyboardState = Keyboard.GetState();
+            OldEvents = new List<IEvent>();
+            NewEvents = new List<IEvent>();
         }
 
         public List<IEvent> HandleInputs()
         {
-            var result = new List<IEvent>();
+            OldEvents = NewEvents;
+            NewEvents = new List<IEvent>();
             var keyboardEvents = HandleKeyboard();
-            result.AddRange(keyboardEvents);
+            NewEvents.AddRange(keyboardEvents);
 
-            return result;
+            return NewEvents;
         }
 
         public List<IEvent> HandleKeyboard()
         {
-            _keyboardState = Keyboard.GetState();
+            _currentKeyboardState = Keyboard.GetState();
+
             var result = new List<IEvent>();
-
-            if (_keyboardState.IsKeyDown(Keys.Up))
-            {
-                result.Add(new MoveEvent(DirectionEnum.Up));
-            }
-
-            if (_keyboardState.IsKeyDown(Keys.Down))
-            {
-                result.Add(new MoveEvent(DirectionEnum.Down));
-            }
-
-            if (_keyboardState.IsKeyDown(Keys.Left))
-            {
-                result.Add(new MoveEvent(DirectionEnum.Left));
-            }
-
-            if (_keyboardState.IsKeyDown(Keys.Right))
-            {
-                result.Add(new MoveEvent(DirectionEnum.Right));
-            }
+            result = AddEvents(_currentKeyboardState);
             return result;
+        }
+
+        private List<IEvent> AddEvents(KeyboardState newState)
+        {
+            var temp = new List<IEvent>();
+            if (_currentKeyboardState.IsKeyDown(Keys.Up))
+            {
+                temp.Add(new MoveEvent(DirectionEnum.Up));
+            }
+
+            if (_currentKeyboardState.IsKeyDown(Keys.Down))
+            {
+                temp.Add(new MoveEvent(DirectionEnum.Down));
+            }
+
+            if (_currentKeyboardState.IsKeyDown(Keys.Left))
+            {
+                temp.Add(new MoveEvent(DirectionEnum.Left));
+            }
+            else if (_currentKeyboardState.IsKeyDown(Keys.Right))
+            {
+                temp.Add(new MoveEvent(DirectionEnum.Right));
+            }
+            return temp;
         }
     }
 }
