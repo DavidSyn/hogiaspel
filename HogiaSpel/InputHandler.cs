@@ -40,23 +40,23 @@ namespace HogiaSpel
         private List<IEvent> AddEvents(KeyboardState newState)
         {
             var temp = new List<IEvent>();
-            if (_currentKeyboardState.IsKeyDown(Keys.Up))
-            {
-                temp.Add(new MoveEvent(DirectionEnum.Up));
-            }
+            //if (_currentKeyboardState.IsKeyDown(Keys.Up))
+            //{
+            //    temp.Add(new MoveEvent(DirectionEnum.Up));
+            //}
 
-            if (_currentKeyboardState.IsKeyDown(Keys.Down))
-            {
-                temp.Add(new MoveEvent(DirectionEnum.Down));
-            }
+            //if (_currentKeyboardState.IsKeyDown(Keys.Down))
+            //{
+            //    temp.Add(new MoveEvent(DirectionEnum.Down));
+            //}
 
-            if (_currentKeyboardState.IsKeyDown(Keys.Left))
-            {
-                temp.Add(new MoveEvent(DirectionEnum.Left));
-            }
-            else if (_currentKeyboardState.IsKeyDown(Keys.Right))
+            if (_currentKeyboardState.IsKeyDown(Keys.Right))
             {
                 temp.Add(new MoveEvent(DirectionEnum.Right));
+            }
+            else if (_currentKeyboardState.IsKeyDown(Keys.Left))
+            {
+                temp.Add(new MoveEvent(DirectionEnum.Left));
             }
             return temp;
         }

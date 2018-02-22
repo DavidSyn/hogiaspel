@@ -12,19 +12,17 @@ namespace HogiaSpel
         public int CurrentFrameWidth { get { return (string.IsNullOrEmpty(_currentState)) ? Animations[_currentState].FrameWidth : 0; } }
 
         private string _currentState;
-        private Texture2D _spriteSheet;
 
-        public SpriteHandler(Texture2D spriteStrip, Vector2 position)
+        public SpriteHandler(Vector2 position)
         {
             Animations = new Dictionary<string, Animation>();
             Position = position;
             _currentState = string.Empty;
-            _spriteSheet = spriteStrip;
         }
 
-        public void InitializeAnimation(string state, int frameWidth, int frameHeight, int frameCount, int frametime, Color color, float scale, bool looping)
+        public void InitializeAnimation(string state, Texture2D sprite, int frameWidth, int frameHeight, int frameCount, int frametime, Color color, float scale, bool looping)
         {
-            var anime = new Animation(_spriteSheet, Position, frameWidth, frameHeight, frameCount, frametime, color, scale, looping);
+            var anime = new Animation(sprite, Position, frameWidth, frameHeight, frameCount, frametime, color, scale, looping);
             Animations.Add(state, anime);
         }
 

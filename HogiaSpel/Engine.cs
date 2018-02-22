@@ -1,16 +1,13 @@
 ﻿using HogiaSpel.Entities;
+using HogiaSpel.Enums;
 using HogiaSpel.GlobalLists;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
 
 namespace HogiaSpel
 {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
     public class Engine : Game
     {
         private static int WINDOW_WIDTH = 1280;
@@ -42,10 +39,6 @@ namespace HogiaSpel
         {
             // TODO: Add your initialization logic here
 
-
-            //--- FPS Stuff ---//
-            _fpsFont = Content.Load<SpriteFont>("text");
-
             base.Initialize();
         }
 
@@ -58,9 +51,15 @@ namespace HogiaSpel
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            //--- FPS Stuff ---//
+            _fpsFont = Content.Load<SpriteFont>("text");
+
             // TODO: use this.Content to load your game content here
             var sprites = Sprites.Instance;
-            sprites.Load("PlayerAvatar", Content.Load<Texture2D>("sprites/qoute"));
+            sprites.Load(SpriteKeys.Quote.StandRight, Content.Load<Texture2D>("sprites/quote/quote-stand-right"));
+            sprites.Load(SpriteKeys.Quote.StandLeft, Content.Load<Texture2D>("sprites/quote/quote-stand-left"));
+            sprites.Load(SpriteKeys.Quote.RunRight, Content.Load<Texture2D>("sprites/quote/quote-run-right"));
+            sprites.Load(SpriteKeys.Quote.RunLeft, Content.Load<Texture2D>("sprites/quote/quote-run-left"));
 
             var entities = EntityList.Instance;
             var playerAvatar = new PlayerAvatar();

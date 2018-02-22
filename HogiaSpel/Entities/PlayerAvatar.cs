@@ -20,11 +20,12 @@ namespace HogiaSpel.Entities
             Speed = 140;
 
             var sprites = Sprites.Instance;
-            SpriteName = "PlayerAvatar";
-            SpriteHandler = new SpriteHandler(sprites.GetSprite(SpriteName), position);
-            SpriteHandler.InitializeAnimation("run-right", 64, 64, 4, 80, Color.White, 1f, true);
-            SpriteHandler.InitializeAnimation("stand-right", 64, 64, 1, 80, Color.White, 1f, true);
-            SpriteHandler.Initialize("stand-right");
+            SpriteHandler = new SpriteHandler(position);
+            SpriteHandler.InitializeAnimation(SpriteKeys.Quote.RunRight, sprites.GetSprite(SpriteKeys.Quote.RunRight), 64, 64, 4, 80, Color.White, 1f, true);
+            SpriteHandler.InitializeAnimation(SpriteKeys.Quote.RunLeft, sprites.GetSprite(SpriteKeys.Quote.RunLeft), 64, 64, 4, 80, Color.White, 1f, true);
+            SpriteHandler.InitializeAnimation(SpriteKeys.Quote.StandRight, sprites.GetSprite(SpriteKeys.Quote.StandRight), 64, 64, 1, 80, Color.White, 1f, true);
+            SpriteHandler.InitializeAnimation(SpriteKeys.Quote.StandLeft, sprites.GetSprite(SpriteKeys.Quote.StandLeft), 64, 64, 1, 80, Color.White, 1f, true);
+            SpriteHandler.Initialize(SpriteKeys.Quote.StandRight);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -35,11 +36,32 @@ namespace HogiaSpel.Entities
         public void Update(GameTime gameTime)
         {
             _inputHandler.HandleInputs();
+            HandleMovement(gameTime);
+
+            SpriteHandler.Update(gameTime);
+        }
+
+        private void HandleMovement(GameTime gameTime)
+        {
             if (!_inputHandler.NewEvents.Any(x => x is MoveEvent))
             {
                 if (_inputHandler.OldEvents.Any(x => x is MoveEvent))
                 {
-                    SpriteHandler.ChangeState("stand-right");
+                    for (int i = 0; i < _inputHandler.OldEvents.Count; i++)
+                    {
+                        var moveEvent = (MoveEvent)_inputHandler.OldEvents[i];
+                        if (moveEvent.Direction == DirectionEnum.Right)
+                        {
+                            SpriteHandler.ChangeState(SpriteKeys.Quote.StandRight);
+                            break;
+                        }
+                        else if (moveEvent.Direction == DirectionEnum.Left)
+                        {
+                            SpriteHandler.ChangeState(SpriteKeys.Quote.StandLeft);
+                            break;
+                        }
+                    }
+
                 }
             }
             else
@@ -52,31 +74,25 @@ namespace HogiaSpel.Entities
                     }
                 }
             }
-            
-            SpriteHandler.Update(gameTime);
         }
 
         private void Move(GameTime gameTime, MoveEvent moveEvent)
         {
             switch (moveEvent.Direction)
             {
-                case DirectionEnum.Up:
-                    MoveUp(gameTime);
-                    break;
-                case DirectionEnum.Down:
-                    MoveDown(gameTime);
-                    break;
+                //case DirectionEnum.Up:
+                //    MoveUp(gameTime);
+                //    break;
+                //case DirectionEnum.Down:
+                //    MoveDown(gameTime);
+                //    break;
                 case DirectionEnum.Right:
                     MoveRight(gameTime);
-                    
-                    if (_inputHandler.OldEvents.Any(x => x is MoveEvent))
-                    {
-                        SpriteHandler.ChangeState("run-right");
-                    }
-                    
+                    SpriteHandler.ChangeState(SpriteKeys.Quote.RunRight);
                     break;
                 case DirectionEnum.Left:
                     MoveLeft(gameTime);
+                    SpriteHandler.ChangeState(SpriteKeys.Quote.RunLeft);
                     break;
                 default:
                     throw new Exception("Error: Invalid direction on event");
