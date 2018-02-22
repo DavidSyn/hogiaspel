@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace HogiaSpel.Entities
@@ -8,7 +7,6 @@ namespace HogiaSpel.Entities
     {
         public Guid Id { get; protected set; }
         public SpriteHandler SpriteHandler { get; protected set; }
-        public string SpriteName { get; protected set; }
         public float Speed { get; protected set; }
         public bool Active { get; set; }
 
