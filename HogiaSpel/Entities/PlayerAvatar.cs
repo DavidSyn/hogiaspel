@@ -17,7 +17,11 @@ namespace HogiaSpel.Entities
             _inputHandler = new InputHandler();
             Id = Guid.NewGuid();
             Active = true;
-            Speed = 140;
+            Speed = 0;
+            BaseSpeed = 140;
+            TopSpeed = 400;
+            Acceleration = 1.015f;
+            CurrentAccelerationDirection = DirectionEnum.NoDirection;
 
             var sprites = Sprites.Instance;
             SpriteHandler = new SpriteHandler(position);
@@ -37,6 +41,7 @@ namespace HogiaSpel.Entities
         {
             _inputHandler.HandleInputs();
             HandleMovement(gameTime);
+            
 
             SpriteHandler.Update(gameTime);
         }
@@ -53,11 +58,15 @@ namespace HogiaSpel.Entities
                         if (moveEvent.Direction == DirectionEnum.Right)
                         {
                             SpriteHandler.ChangeState(SpriteKeys.Quote.StandRight);
+                            CurrentAccelerationDirection = DirectionEnum.NoDirection;
+                            CalculateSpeed();
                             break;
                         }
                         else if (moveEvent.Direction == DirectionEnum.Left)
                         {
                             SpriteHandler.ChangeState(SpriteKeys.Quote.StandLeft);
+                            CurrentAccelerationDirection = DirectionEnum.NoDirection;
+                            CalculateSpeed();
                             break;
                         }
                     }
@@ -66,19 +75,40 @@ namespace HogiaSpel.Entities
             }
             else
             {
-                for (int i = 0; i < _inputHandler.NewEvents.Count; i++)
+                var moveEvent = (MoveEvent)_inputHandler.NewEvents.Where(x => x is MoveEvent).FirstOrDefault();
+                CurrentAccelerationDirection = moveEvent.Direction;
+                CalculateSpeed();
+            }
+            Move(gameTime);
+        }
+
+        private void CalculateSpeed()
+        {
+            if (CurrentAccelerationDirection == DirectionEnum.NoDirection)
+            {
+                Speed = 0;
+            }
+            else if (CurrentAccelerationDirection == DirectionEnum.Left || CurrentAccelerationDirection == DirectionEnum.Right)
+            {
+                if (!_inputHandler.OldEvents.Any(x => x is MoveEvent))
                 {
-                    if (_inputHandler.NewEvents[i] is MoveEvent)
-                    {
-                        Move(gameTime, (MoveEvent)_inputHandler.NewEvents[i]);
-                    }
+                    Speed = BaseSpeed;
                 }
+                else
+                {
+                    Speed = Speed * Acceleration;
+                }
+            }
+
+            if (Speed > TopSpeed)
+            {
+                Speed = TopSpeed;
             }
         }
 
-        private void Move(GameTime gameTime, MoveEvent moveEvent)
+        private void Move(GameTime gameTime)
         {
-            switch (moveEvent.Direction)
+            switch (CurrentAccelerationDirection)
             {
                 //case DirectionEnum.Up:
                 //    MoveUp(gameTime);
@@ -95,7 +125,7 @@ namespace HogiaSpel.Entities
                     SpriteHandler.ChangeState(SpriteKeys.Quote.RunLeft);
                     break;
                 default:
-                    throw new Exception("Error: Invalid direction on event");
+                    break;
             }
         }
     }

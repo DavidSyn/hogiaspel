@@ -11,7 +11,11 @@ namespace HogiaSpel.Entities
         {
             Id = Guid.NewGuid();
             Active = true;
-            Speed = 140;
+            Speed = 0;
+            BaseSpeed = 0;
+            TopSpeed = 0;
+            Acceleration = 0;
+            CurrentAccelerationDirection = DirectionEnum.NoDirection;
 
             var sprites = Sprites.Instance;
             SpriteHandler = new SpriteHandler(position);
