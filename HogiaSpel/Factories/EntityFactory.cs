@@ -2,7 +2,7 @@
 using HogiaSpel.GlobalLists;
 using Microsoft.Xna.Framework;
 
-namespace HogiaSpel
+namespace HogiaSpel.Factories
 {
     public static class EntityFactory
     {

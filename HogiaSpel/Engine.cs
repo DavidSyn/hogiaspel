@@ -1,5 +1,6 @@
 ﻿using HogiaSpel.Entities;
 using HogiaSpel.Enums;
+using HogiaSpel.Factories;
 using HogiaSpel.GlobalLists;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
