@@ -14,5 +14,14 @@
         {
             public static string Stand = "block-stand";
         }
+        public static class DiamondBlock
+        {
+            public static string Stand = "diamondblock-stand";
+        }
+
+        public static class MetalBlock
+        {
+            public static string Stand = "metalblock-stand";
+        }
     }
 }

@@ -20,10 +20,29 @@ namespace HogiaSpel.Factories
             sprites.Load(SpriteKeys.Quote.RunLeft, loader.Load<Texture2D>("sprites/quote/quote-run-left"));
 
             //Load environmental  entities
-            sprites.Load(SpriteKeys.Block.Stand, loader.Load<Texture2D>("sprites/block"));
+            sprites.Load(SpriteKeys.Block.Stand, loader.Load<Texture2D>("sprites/block/block"));
+            sprites.Load(SpriteKeys.DiamondBlock.Stand, loader.Load<Texture2D>("sprites/block/diamon-block"));
+            sprites.Load(SpriteKeys.MetalBlock.Stand, loader.Load<Texture2D>("sprites/block/metal-block"));
 
             // --- CREATE THINGS --- //
             EntityFactory.CreateEntity(new PlayerAvatar(), new Vector2(400, 400));
+            EntityFactory.CreateEntity(new Block(), new Vector2(336, 400));
+
+            EntityFactory.CreateEntity(new DiamondBlock(), new Vector2(272, 464));
+            EntityFactory.CreateEntity(new MetalBlock(), new Vector2(336, 464));
+            EntityFactory.CreateEntity(new MetalBlock(), new Vector2(400, 464));
+            EntityFactory.CreateEntity(new MetalBlock(), new Vector2(464, 464));
+            EntityFactory.CreateEntity(new MetalBlock(), new Vector2(528, 464));
+            EntityFactory.CreateEntity(new DiamondBlock(), new Vector2(592, 464));
+
+            EntityFactory.CreateEntity(new DiamondBlock(), new Vector2(752, 400));
+            EntityFactory.CreateEntity(new MetalBlock(), new Vector2(816, 400));
+            EntityFactory.CreateEntity(new MetalBlock(), new Vector2(880, 400));
+            EntityFactory.CreateEntity(new MetalBlock(), new Vector2(944, 400));
+            EntityFactory.CreateEntity(new MetalBlock(), new Vector2(1008, 400));
+            EntityFactory.CreateEntity(new MetalBlock(), new Vector2(1072, 400));
+            EntityFactory.CreateEntity(new MetalBlock(), new Vector2(1136, 400));
+            EntityFactory.CreateEntity(new DiamondBlock(), new Vector2(1200, 400));
         }
     }
 }
