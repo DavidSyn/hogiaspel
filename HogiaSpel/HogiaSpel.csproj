@@ -42,6 +42,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Animation.cs" />
+    <Compile Include="Entities\Block.cs" />
+    <Compile Include="Entities\DiamondBlock.cs" />
+    <Compile Include="Entities\MetalBlock.cs" />
     <Compile Include="Factories\EntityFactory.cs" />
     <Compile Include="Enums\SpriteKeys.cs" />
     <Compile Include="Factories\LevelFactory.cs" />
