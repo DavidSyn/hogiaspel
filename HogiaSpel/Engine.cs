@@ -55,16 +55,7 @@ namespace HogiaSpel
             _fpsFont = Content.Load<SpriteFont>("text");
 
             // TODO: use this.Content to load your game content here
-            var sprites = Sprites.Instance;
-            sprites.Load(SpriteKeys.Quote.StandRight, Content.Load<Texture2D>("sprites/quote/quote-stand-right"));
-            sprites.Load(SpriteKeys.Quote.StandLeft, Content.Load<Texture2D>("sprites/quote/quote-stand-left"));
-            sprites.Load(SpriteKeys.Quote.RunRight, Content.Load<Texture2D>("sprites/quote/quote-run-right"));
-            sprites.Load(SpriteKeys.Quote.RunLeft, Content.Load<Texture2D>("sprites/quote/quote-run-left"));
-
-            var entities = EntityList.Instance;
-            var playerAvatar = new PlayerAvatar();
-            playerAvatar.Initialize(new Vector2(400, 400));
-            entities.AddEntity(playerAvatar);
+            LevelFactory.LoadLevelOne(Content);
         }
 
         /// <summary>

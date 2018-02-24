@@ -42,7 +42,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Animation.cs" />
+    <Compile Include="EntityFactory.cs" />
     <Compile Include="Enums\SpriteKeys.cs" />
+    <Compile Include="LevelFactory.cs" />
     <Compile Include="SpriteHandler.cs" />
     <Compile Include="Sprites.cs" />
     <Compile Include="Engine.cs" />

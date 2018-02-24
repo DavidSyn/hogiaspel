@@ -9,5 +9,10 @@
             public static string RunRight = "quote-run-right";
             public static string RunLeft = "quote-run-left";
         }
+
+        public static class Block
+        {
+            public static string Stand = "block-stand";
+        }
     }
 }
