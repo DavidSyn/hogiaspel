@@ -1,4 +1,5 @@
-﻿using HogiaSpel.Enums;
+﻿using HogiaSpel.CollisionDetection;
+using HogiaSpel.Enums;
 using HogiaSpel.Events;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -30,6 +31,9 @@ namespace HogiaSpel.Entities
             SpriteHandler.InitializeAnimation(SpriteKeys.Quote.StandRight, sprites.GetSprite(SpriteKeys.Quote.StandRight), 64, 64, 1, 80, Color.White, 1f, true);
             SpriteHandler.InitializeAnimation(SpriteKeys.Quote.StandLeft, sprites.GetSprite(SpriteKeys.Quote.StandLeft), 64, 64, 1, 80, Color.White, 1f, true);
             SpriteHandler.Initialize(SpriteKeys.Quote.StandRight);
+
+            var grid = CollisionGrid.Instance;
+            CollisionCellPositions = grid.UpdateCellPosition(this);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -41,9 +45,16 @@ namespace HogiaSpel.Entities
         {
             _inputHandler.HandleInputs();
             HandleMovement(gameTime);
-            
+
+            var grid = CollisionGrid.Instance;
+            CollisionCellPositions = grid.UpdateCellPosition(this);
 
             SpriteHandler.Update(gameTime);
+        }
+
+        public Vector2 GetPosition()
+        {
+            return SpriteHandler.Position;
         }
 
         private void HandleMovement(GameTime gameTime)

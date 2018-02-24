@@ -1,22 +1,24 @@
 ﻿using HogiaSpel.Enums;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace HogiaSpel.Entities
 {
     public abstract class AbstractEntity
     {
         public Guid Id { get; protected set; }
-        public SpriteHandler SpriteHandler { get; protected set; }
         public float Speed { get; protected set; }
         public float BaseSpeed { get; protected set; }
         public float TopSpeed { get; protected set; }
         public float Acceleration { get; protected set; }
         public DirectionEnum CurrentAccelerationDirection { get; protected set; }
         public bool Active { get; set; }
-
         public int Width { get { return SpriteHandler.CurrentFrameWidth; } }
         public int Height { get { return SpriteHandler.CurrentFrameWidth; } }
+
+        protected SpriteHandler SpriteHandler { get; set; }
+        protected List<Tuple<int, int>> CollisionCellPositions { get; set; }
 
         protected void MoveUp(GameTime gameTime)
         {
