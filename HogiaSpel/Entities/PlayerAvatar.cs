@@ -50,6 +50,8 @@ namespace HogiaSpel.Entities
             CollisionCellPositions = grid.UpdateCellPosition(this);
 
             SpriteHandler.Update(gameTime);
+
+            //CollisionCheck
         }
 
         public Vector2 GetPosition()
