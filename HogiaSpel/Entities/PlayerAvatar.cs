@@ -9,11 +9,11 @@ using System.Linq;
 
 namespace HogiaSpel.Entities
 {
-    public class PlayerAvatar : AbstractEntity, IEntity
+    public class PlayerAvatar : AbstractEntity
     {
         private InputHandler _inputHandler;
 
-        public void Initialize(Vector2 position)
+        public override void Initialize(Vector2 position)
         {
             _inputHandler = new InputHandler();
             Id = Guid.NewGuid();
@@ -36,12 +36,12 @@ namespace HogiaSpel.Entities
             CollisionCellPositions = grid.UpdateCellPosition(this);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             SpriteHandler.Draw(spriteBatch);
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             _inputHandler.HandleInputs();
             HandleMovement(gameTime);
@@ -52,11 +52,6 @@ namespace HogiaSpel.Entities
             SpriteHandler.Update(gameTime);
 
             //CollisionCheck
-        }
-
-        public Vector2 GetPosition()
-        {
-            return SpriteHandler.Position;
         }
 
         private void HandleMovement(GameTime gameTime)
