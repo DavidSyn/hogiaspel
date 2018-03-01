@@ -1,4 +1,5 @@
-﻿using HogiaSpel.Enums;
+﻿using HogiaSpel.CollisionDetection;
+using HogiaSpel.Enums;
 using HogiaSpel.Events;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,11 +9,11 @@ using System.Linq;
 
 namespace HogiaSpel.Entities
 {
-    public class PlayerAvatar : AbstractEntity, IEntity
+    public class PlayerAvatar : AbstractEntity
     {
         private InputHandler _inputHandler;
 
-        public void Initialize(Vector2 position)
+        public override void Initialize(Vector2 position)
         {
             _inputHandler = new InputHandler();
             Id = Guid.NewGuid();
@@ -30,20 +31,27 @@ namespace HogiaSpel.Entities
             SpriteHandler.InitializeAnimation(SpriteKeys.Quote.StandRight, sprites.GetSprite(SpriteKeys.Quote.StandRight), 64, 64, 1, 80, Color.White, 1f, true);
             SpriteHandler.InitializeAnimation(SpriteKeys.Quote.StandLeft, sprites.GetSprite(SpriteKeys.Quote.StandLeft), 64, 64, 1, 80, Color.White, 1f, true);
             SpriteHandler.Initialize(SpriteKeys.Quote.StandRight);
+
+            var grid = CollisionGrid.Instance;
+            CollisionCellPositions = grid.UpdateCellPosition(this);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             SpriteHandler.Draw(spriteBatch);
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             _inputHandler.HandleInputs();
             HandleMovement(gameTime);
-            
+
+            var grid = CollisionGrid.Instance;
+            CollisionCellPositions = grid.UpdateCellPosition(this);
 
             SpriteHandler.Update(gameTime);
+
+            //CollisionCheck
         }
 
         private void HandleMovement(GameTime gameTime)

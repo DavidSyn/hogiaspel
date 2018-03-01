@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using HogiaSpel.Enums;
+using HogiaSpel.CollisionDetection;
 
 namespace HogiaSpel.Entities
 {
@@ -21,6 +22,9 @@ namespace HogiaSpel.Entities
             SpriteHandler = new SpriteHandler(position);
             SpriteHandler.InitializeAnimation(SpriteKeys.Block.Stand, sprites.GetSprite(SpriteKeys.Block.Stand), 64, 64, 1, 80, Color.White, 1f, true);
             SpriteHandler.Initialize(SpriteKeys.Block.Stand);
+
+            var grid = CollisionGrid.Instance;
+            CollisionCellPositions = grid.UpdateCellPosition(this);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -30,7 +34,15 @@ namespace HogiaSpel.Entities
 
         public void Update(GameTime gameTime)
         {
+            var grid = CollisionGrid.Instance;
+            CollisionCellPositions = grid.UpdateCellPosition(this);
+
             SpriteHandler.Update(gameTime);
+        }
+
+        public Vector2 GetPosition()
+        {
+            return SpriteHandler.Position;
         }
     }
 }
