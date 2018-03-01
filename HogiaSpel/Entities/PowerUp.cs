@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace HogiaSpel.Entities
 {
-    class PowerUp : AbstractEntity, IEntity
+    public class PowerUp : AbstractEntity, IEntity
     {
         public void Initialize(Vector2 position)
         {
