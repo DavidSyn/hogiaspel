@@ -17,6 +17,7 @@ namespace HogiaSpel.Entities
         bool Active { get; }
         int Width { get; }
         int Height { get; }
+        Rectangle Rectangle { get; }
 
         SpriteHandler SpriteHandler { get; }
         List<Tuple<int, int>> CollisionCellPositions { get; }

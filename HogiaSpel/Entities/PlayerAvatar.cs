@@ -2,6 +2,7 @@
 using HogiaSpel.Enums;
 using HogiaSpel.Events;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace HogiaSpel.Entities
     public class PlayerAvatar : AbstractEntity
     {
         private InputHandler _inputHandler;
+        private ContentManager _content;
 
         public override void Initialize(Vector2 position)
         {

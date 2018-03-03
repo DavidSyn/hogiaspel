@@ -25,6 +25,7 @@ namespace HogiaSpel.Factories
             sprites.Load(SpriteKeys.MetalBlock.Stand, loader.Load<Texture2D>("sprites/block/metal-block"));
 
             // --- CREATE THINGS --- //
+            var e = new PlayerAvatar();
             EntityFactory.CreateEntity(new PlayerAvatar(), new Vector2(400, 400));
             EntityFactory.CreateEntity(new Block(), new Vector2(336, 400));
 
