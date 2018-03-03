@@ -48,6 +48,7 @@
     <Compile Include="Entities\DiamondBlock.cs" />
     <Compile Include="Entities\IAbstractEntity.cs" />
     <Compile Include="Entities\MetalBlock.cs" />
+    <Compile Include="Entities\PowerUp.cs" />
     <Compile Include="Factories\EntityFactory.cs" />
     <Compile Include="Enums\SpriteKeys.cs" />
     <Compile Include="Factories\LevelFactory.cs" />

@@ -23,6 +23,7 @@ namespace HogiaSpel.Factories
             sprites.Load(SpriteKeys.Block.Stand, loader.Load<Texture2D>("sprites/block/block"));
             sprites.Load(SpriteKeys.DiamondBlock.Stand, loader.Load<Texture2D>("sprites/block/diamon-block"));
             sprites.Load(SpriteKeys.MetalBlock.Stand, loader.Load<Texture2D>("sprites/block/metal-block"));
+            //sprites.Load(SpriteKeys.PowerUp.Stand, loader.Load<Texture2D>("sprites/powerup/powerup"));
 
             // --- CREATE THINGS --- //
             EntityFactory.CreateEntity(new PlayerAvatar(), new Vector2(400, 400));
@@ -34,6 +35,7 @@ namespace HogiaSpel.Factories
             EntityFactory.CreateEntity(new MetalBlock(), new Vector2(464, 464));
             EntityFactory.CreateEntity(new MetalBlock(), new Vector2(528, 464));
             EntityFactory.CreateEntity(new DiamondBlock(), new Vector2(592, 464));
+            //EntityFactory.CreateEntity(new PowerUp(), new Vector2(592, 528));
 
             EntityFactory.CreateEntity(new DiamondBlock(), new Vector2(752, 400));
             EntityFactory.CreateEntity(new MetalBlock(), new Vector2(816, 400));
