@@ -87,10 +87,14 @@ namespace HogiaSpel
             }
 
             // TODO: Add your update logic here
-
             for (int i = 0; i < entities.Count(); i++)
             {
                 entities.GetEntity(i).Update(gameTime);
+            }
+
+            for (int i = 0; i < entities.Count(); i++)
+            {
+                entities.GetEntity(i).CheckCollision(gameTime);
             }
 
             var grid = CollisionGrid.Instance;

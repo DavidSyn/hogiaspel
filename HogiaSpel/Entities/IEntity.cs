@@ -24,6 +24,7 @@ namespace HogiaSpel.Entities
 
         void Initialize(Vector2 position);
         void Update(GameTime gameTime);
+        void CheckCollision(GameTime gameTime);
         void Draw(SpriteBatch spriteBatch);
     }
 }

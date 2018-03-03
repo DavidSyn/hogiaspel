@@ -4,11 +4,11 @@ using Microsoft.Xna.Framework.Graphics;
 using HogiaSpel.Enums;
 using HogiaSpel.CollisionDetection;
 
-namespace HogiaSpel.Entities
+namespace HogiaSpel.Entities.Blocks
 {
-    public class DiamondBlock : AbstractEntity, IEntity
+    public class DiamondBlock : AbstractEntity, IBlock
     {
-        public void Initialize(Vector2 position)
+        public override void Initialize(Vector2 position)
         {
             Id = Guid.NewGuid();
             Active = true;
@@ -27,12 +27,12 @@ namespace HogiaSpel.Entities
             CollisionCellPositions = grid.UpdateCellPosition(this);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             SpriteHandler.Draw(spriteBatch);
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             var grid = CollisionGrid.Instance;
             CollisionCellPositions = grid.UpdateCellPosition(this);
@@ -40,9 +40,15 @@ namespace HogiaSpel.Entities
             SpriteHandler.Update(gameTime);
         }
 
-        public Vector2 GetPosition()
+        public override void CheckCollision(GameTime gameTime)
         {
-            return SpriteHandler.Position;
+            //var grid = CollisionGrid.Instance;
+            //foreach (var entity in grid.GetEntitiesWithinCell(CollisionCellPositions))
+            //{
+            //    if (Id != entity.Id)
+            //    {
+            //    }
+            //}
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using HogiaSpel.Entities;
+using HogiaSpel.Entities.Blocks;
 using HogiaSpel.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
