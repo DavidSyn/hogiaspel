@@ -8,8 +8,8 @@ namespace HogiaSpel
     {
         public Dictionary<string, Animation> Animations { get; protected set; }
         public Vector2 Position { get; set; }
-        public int CurrentFrameHeight { get { return (string.IsNullOrEmpty(_currentState)) ? Animations[_currentState].FrameHeight : 0; } }
-        public int CurrentFrameWidth { get { return (string.IsNullOrEmpty(_currentState)) ? Animations[_currentState].FrameWidth : 0; } }
+        public int CurrentFrameHeight { get { return (!string.IsNullOrEmpty(_currentState)) ? Animations[_currentState].FrameHeight : 0; } }
+        public int CurrentFrameWidth { get { return (!string.IsNullOrEmpty(_currentState)) ? Animations[_currentState].FrameWidth : 0; } }
 
         private string _currentState;
 
@@ -17,7 +17,7 @@ namespace HogiaSpel
         {
             Animations = new Dictionary<string, Animation>();
             Position = position;
-            _currentState = string.Empty;
+            _currentState = null;
         }
 
         public void InitializeAnimation(string state, Texture2D sprite, int frameWidth, int frameHeight, int frameCount, int frametime, Color color, float scale, bool looping)

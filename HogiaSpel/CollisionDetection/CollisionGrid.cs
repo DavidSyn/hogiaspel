@@ -50,13 +50,13 @@ namespace HogiaSpel.CollisionDetection
             {
                 float cellWidthBegin = i * _cellWidth;
                 float cellWidthEnd = (i * _cellWidth) + _cellWidth;
-                if ((entity.SpriteHandler.Position.X >= cellWidthBegin) && (entity.SpriteHandler.Position.X < cellWidthEnd))
+                if (((entity.SpriteHandler.Position.X >= cellWidthBegin) && (entity.SpriteHandler.Position.X < cellWidthEnd)) || ((entity.SpriteHandler.Position.X + entity.Width >= cellWidthBegin) && (entity.SpriteHandler.Position.X + entity.Width < cellWidthEnd)))
                 {
                     for (int j = 0; j < MaxRows; j++)
                     {
                         float cellHeightTop = j * _cellHeight;
                         float cellHeightBottom = (j * _cellHeight) + _cellHeight;
-                        if ((entity.SpriteHandler.Position.Y >= cellHeightTop) && (entity.SpriteHandler.Position.Y < cellHeightBottom))
+                        if (((entity.SpriteHandler.Position.Y >= cellHeightTop) && (entity.SpriteHandler.Position.Y < cellHeightBottom)) || ((entity.SpriteHandler.Position.X + entity.Height >= cellHeightTop) && (entity.SpriteHandler.Position.X + entity.Height < cellHeightBottom)))
                         {
                             Grid[i][j].Entities.Add(entity);
                             result.Add(Tuple.Create(i, j));
