@@ -63,6 +63,11 @@ namespace HogiaSpel.Entities
             throw new NotImplementedException();
         }
 
+        public virtual void CheckCollision(GameTime gameTime)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             throw new NotImplementedException();

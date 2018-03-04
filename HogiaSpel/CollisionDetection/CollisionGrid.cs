@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HogiaSpel.CollisionDetection
 {
@@ -75,9 +76,21 @@ namespace HogiaSpel.CollisionDetection
             }
         }
 
-        public List<IEntity> GetEntitiesWithinCell(Tuple<int, int> cellPosition)
+        public List<IEntity> GetEntitiesWithinCell(List<Tuple<int, int>> cellPositions)
         {
-            return Grid[cellPosition.Item1][cellPosition.Item2].Entities;
+
+            var entities = new List<IEntity>();
+            foreach (var cell in cellPositions)
+            {
+                foreach (var entity in Grid[cell.Item1][cell.Item2].Entities)
+                {
+                    if (!entities.Any(x => x.Id == entity.Id))
+                    {
+                        entities.Add(entity);
+                    }
+                }
+            }
+            return entities;
         }
     }
 }

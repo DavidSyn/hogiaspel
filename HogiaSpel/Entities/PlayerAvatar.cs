@@ -1,6 +1,8 @@
 ﻿using HogiaSpel.CollisionDetection;
+using HogiaSpel.Entities.Blocks;
 using HogiaSpel.Enums;
 using HogiaSpel.Events;
+using HogiaSpel.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -47,10 +49,55 @@ namespace HogiaSpel.Entities
 
             var grid = CollisionGrid.Instance;
             CollisionCellPositions = grid.UpdateCellPosition(this);
-
             SpriteHandler.Update(gameTime);
+        }
 
-            //CollisionCheck
+        public override void CheckCollision(GameTime gameTime)
+        {
+            var grid = CollisionGrid.Instance;
+            foreach (var entity in grid.GetEntitiesWithinCell(CollisionCellPositions))
+            {
+                if (Id != entity.Id)
+                {
+                    if (entity is IBlock)
+                    {
+                        HandleBlockCollision(entity);
+                    }
+                }
+            }
+        }
+
+        private void HandleBlockCollision(IEntity entity)
+        {
+            if (Rectangle.Intersects(entity.Rectangle))
+            {
+                var collisionDepth = Rectangle.GetIntersectionDirection(entity.Rectangle);
+                if ((collisionDepth.Y == entity.Rectangle.Height) || (collisionDepth.Y == (entity.Rectangle.Height * -1)))
+                {
+                    float x = SpriteHandler.Position.X;
+                    float y = SpriteHandler.Position.Y;
+                    x = SpriteHandler.Position.X + collisionDepth.X;
+                    SpriteHandler.Position = new Vector2(x, y);
+                    Speed = BaseSpeed;
+                }
+                else if ((collisionDepth.X == entity.Rectangle.Width) || (collisionDepth.X == (entity.Rectangle.Width * -1)))
+                {
+                    float x = SpriteHandler.Position.X;
+                    float y = SpriteHandler.Position.Y;
+                    y = SpriteHandler.Position.Y + collisionDepth.Y;
+                    SpriteHandler.Position = new Vector2(x, y);
+                    Speed = BaseSpeed;
+                }
+                else
+                {
+                    float x = SpriteHandler.Position.X;
+                    float y = SpriteHandler.Position.Y;
+                    y = SpriteHandler.Position.Y + collisionDepth.Y;
+                    x = SpriteHandler.Position.X + collisionDepth.X;
+                    SpriteHandler.Position = new Vector2(x, y);
+                    Speed = BaseSpeed;
+                }
+            }
         }
 
         private void HandleMovement(GameTime gameTime)

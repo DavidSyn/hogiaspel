@@ -4,11 +4,11 @@ using Microsoft.Xna.Framework.Graphics;
 using HogiaSpel.Enums;
 using HogiaSpel.CollisionDetection;
 
-namespace HogiaSpel.Entities
+namespace HogiaSpel.Entities.Blocks
 {
-    public class Block : AbstractEntity, IEntity
+    public class MetalBlock : AbstractEntity, IBlock
     {
-        public void Initialize(Vector2 position)
+        public override void Initialize(Vector2 position)
         {
             Id = Guid.NewGuid();
             Active = true;
@@ -20,19 +20,19 @@ namespace HogiaSpel.Entities
 
             var sprites = Sprites.Instance;
             SpriteHandler = new SpriteHandler(position);
-            SpriteHandler.InitializeAnimation(SpriteKeys.Block.Stand, sprites.GetSprite(SpriteKeys.Block.Stand), 64, 64, 1, 80, Color.White, 1f, true);
-            SpriteHandler.Initialize(SpriteKeys.Block.Stand);
+            SpriteHandler.InitializeAnimation(SpriteKeys.MetalBlock.Stand, sprites.GetSprite(SpriteKeys.MetalBlock.Stand), 64, 64, 1, 80, Color.White, 1f, true);
+            SpriteHandler.Initialize(SpriteKeys.MetalBlock.Stand);
 
             var grid = CollisionGrid.Instance;
             CollisionCellPositions = grid.UpdateCellPosition(this);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             SpriteHandler.Draw(spriteBatch);
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             var grid = CollisionGrid.Instance;
             CollisionCellPositions = grid.UpdateCellPosition(this);
@@ -40,9 +40,15 @@ namespace HogiaSpel.Entities
             SpriteHandler.Update(gameTime);
         }
 
-        public Vector2 GetPosition()
+        public override void CheckCollision(GameTime gameTime)
         {
-            return SpriteHandler.Position;
+            //var grid = CollisionGrid.Instance;
+            //foreach (var entity in grid.GetEntitiesWithinCell(CollisionCellPositions))
+            //{
+            //    if (Id != entity.Id)
+            //    {
+            //    }
+            //}
         }
     }
 }
