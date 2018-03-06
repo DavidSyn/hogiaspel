@@ -21,35 +21,43 @@ namespace HogiaSpel.Entities
         public SpriteHandler SpriteHandler { get; protected set; }
         public List<Tuple<int, int>> CollisionCellPositions { get; protected set; }
 
-        public void MoveUp(GameTime gameTime)
+        public void MoveUp(float speed, GameTime gameTime = null)
         {
+            float deltatime = (gameTime != null) ? (float)gameTime.ElapsedGameTime.TotalSeconds : 1F;
+
             float x = SpriteHandler.Position.X;
             float y = SpriteHandler.Position.Y;
-            y = SpriteHandler.Position.Y - (Speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            y = SpriteHandler.Position.Y - (speed * deltatime);
             SpriteHandler.Position = new Vector2(x, y);
         }
 
-        public void MoveDown(GameTime gameTime)
+        public void MoveDown(float speed, GameTime gameTime = null)
         {
+            float deltatime = (gameTime != null) ? (float)gameTime.ElapsedGameTime.TotalSeconds : 1F;
+
             float x = SpriteHandler.Position.X;
             float y = SpriteHandler.Position.Y;
-            y = SpriteHandler.Position.Y + (Speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            y = SpriteHandler.Position.Y + (speed * deltatime);
             SpriteHandler.Position = new Vector2(x, y);
         }
 
-        public void MoveRight(GameTime gameTime)
+        public void MoveRight(float speed, GameTime gameTime = null)
         {
+            float deltatime = (gameTime != null) ? (float)gameTime.ElapsedGameTime.TotalSeconds : 1F;
+
             float x = SpriteHandler.Position.X;
             float y = SpriteHandler.Position.Y;
-            x = SpriteHandler.Position.X + (Speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            x = SpriteHandler.Position.X + (speed * deltatime);
             SpriteHandler.Position = new Vector2(x, y);
         }
 
-        public void MoveLeft(GameTime gameTime)
+        public void MoveLeft(float speed, GameTime gameTime = null)
         {
+            float deltatime = (gameTime != null) ? (float)gameTime.ElapsedGameTime.TotalSeconds : 1F;
+
             float x = SpriteHandler.Position.X;
             float y = SpriteHandler.Position.Y;
-            x = SpriteHandler.Position.X - (Speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            x = SpriteHandler.Position.X - (speed * deltatime);
             SpriteHandler.Position = new Vector2(x, y);
         }
 

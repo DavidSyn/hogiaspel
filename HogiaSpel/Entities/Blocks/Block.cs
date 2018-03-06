@@ -53,10 +53,7 @@ namespace HogiaSpel.Entities.Blocks
                         if (Rectangle.Intersects(entity.Rectangle))
                         {
                             var collisionDepth = Rectangle.GetIntersectionDirection(entity.Rectangle);
-                            float x = SpriteHandler.Position.X;
-                            float y = SpriteHandler.Position.Y;
-                            x = SpriteHandler.Position.X + collisionDepth.X;
-                            SpriteHandler.Position = new Vector2(x, y);
+                            MoveRight(collisionDepth.X);
                         }
                     }
                 }
