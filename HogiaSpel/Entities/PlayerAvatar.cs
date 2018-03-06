@@ -1,18 +1,20 @@
-﻿using HogiaSpel.Enums;
+﻿using HogiaSpel.CollisionDetection;
+using HogiaSpel.Entities.Blocks;
+using HogiaSpel.Enums;
 using HogiaSpel.Events;
+using HogiaSpel.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace HogiaSpel.Entities
 {
-    public class PlayerAvatar : AbstractEntity, IEntity
+    public class PlayerAvatar : AbstractEntity
     {
         private InputHandler _inputHandler;
 
-        public void Initialize(Vector2 position)
+        public override void Initialize(Vector2 position)
         {
             _inputHandler = new InputHandler();
             Id = Guid.NewGuid();
@@ -30,20 +32,72 @@ namespace HogiaSpel.Entities
             SpriteHandler.InitializeAnimation(SpriteKeys.Quote.StandRight, sprites.GetSprite(SpriteKeys.Quote.StandRight), 64, 64, 1, 80, Color.White, 1f, true);
             SpriteHandler.InitializeAnimation(SpriteKeys.Quote.StandLeft, sprites.GetSprite(SpriteKeys.Quote.StandLeft), 64, 64, 1, 80, Color.White, 1f, true);
             SpriteHandler.Initialize(SpriteKeys.Quote.StandRight);
+
+            var grid = CollisionGrid.Instance;
+            CollisionCellPositions = grid.UpdateCellPosition(this);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             SpriteHandler.Draw(spriteBatch);
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             _inputHandler.HandleInputs();
             HandleMovement(gameTime);
-            
 
+            var grid = CollisionGrid.Instance;
+            CollisionCellPositions = grid.UpdateCellPosition(this);
             SpriteHandler.Update(gameTime);
+        }
+
+        public override void CheckCollision(GameTime gameTime)
+        {
+            var grid = CollisionGrid.Instance;
+            foreach (var entity in grid.GetEntitiesWithinCell(CollisionCellPositions))
+            {
+                if (Id != entity.Id)
+                {
+                    if (entity is IBlock)
+                    {
+                        HandleBlockCollision(entity);
+                    }
+                }
+            }
+        }
+
+        private void HandleBlockCollision(IEntity entity)
+        {
+            if (Rectangle.Intersects(entity.Rectangle))
+            {
+                var collisionDepth = Rectangle.GetIntersectionDirection(entity.Rectangle);
+                if ((collisionDepth.Y == entity.Rectangle.Height) || (collisionDepth.Y == (entity.Rectangle.Height * -1)))
+                {
+                    float x = SpriteHandler.Position.X;
+                    float y = SpriteHandler.Position.Y;
+                    x = SpriteHandler.Position.X + collisionDepth.X;
+                    SpriteHandler.Position = new Vector2(x, y);
+                    Speed = BaseSpeed;
+                }
+                else if ((collisionDepth.X == entity.Rectangle.Width) || (collisionDepth.X == (entity.Rectangle.Width * -1)))
+                {
+                    float x = SpriteHandler.Position.X;
+                    float y = SpriteHandler.Position.Y;
+                    y = SpriteHandler.Position.Y + collisionDepth.Y;
+                    SpriteHandler.Position = new Vector2(x, y);
+                    Speed = BaseSpeed;
+                }
+                else
+                {
+                    float x = SpriteHandler.Position.X;
+                    float y = SpriteHandler.Position.Y;
+                    y = SpriteHandler.Position.Y + collisionDepth.Y;
+                    x = SpriteHandler.Position.X + collisionDepth.X;
+                    SpriteHandler.Position = new Vector2(x, y);
+                    Speed = BaseSpeed;
+                }
+            }
         }
 
         private void HandleMovement(GameTime gameTime)

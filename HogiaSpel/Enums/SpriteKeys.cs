@@ -23,5 +23,10 @@
         {
             public static string Stand = "metalblock-stand";
         }
+
+        public static class PowerUp
+        {
+            public static string Stand = "powerup-stand";
+        }
     }
 }

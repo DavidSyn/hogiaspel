@@ -1,4 +1,5 @@
-﻿using HogiaSpel.Entities;
+﻿using HogiaSpel.CollisionDetection;
+using HogiaSpel.Entities;
 using HogiaSpel.Enums;
 using HogiaSpel.Factories;
 using HogiaSpel.GlobalLists;
@@ -12,7 +13,9 @@ namespace HogiaSpel
     public class Engine : Game
     {
         private static int WINDOW_WIDTH = 1280;
-        private static int WINDOW_HEIGHT = 720;
+        private static int WINDOW_HEIGHT = 768;
+        private static int CELL_WIDTH = 128;
+        private static int CELL_HEIGHT = 128;
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -39,6 +42,8 @@ namespace HogiaSpel
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            var grid = CollisionGrid.Instance;
+            grid.Initialize(WINDOW_HEIGHT, WINDOW_WIDTH, CELL_HEIGHT, CELL_WIDTH);
 
             base.Initialize();
         }
@@ -82,11 +87,18 @@ namespace HogiaSpel
             }
 
             // TODO: Add your update logic here
-
             for (int i = 0; i < entities.Count(); i++)
             {
                 entities.GetEntity(i).Update(gameTime);
             }
+
+            for (int i = 0; i < entities.Count(); i++)
+            {
+                entities.GetEntity(i).CheckCollision(gameTime);
+            }
+
+            var grid = CollisionGrid.Instance;
+            grid.Clear();
 
             base.Update(gameTime);
         }
