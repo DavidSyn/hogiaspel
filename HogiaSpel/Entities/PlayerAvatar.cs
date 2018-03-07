@@ -48,8 +48,11 @@ namespace HogiaSpel.Entities
 
         public override void Update(GameTime gameTime)
         {
+            SpriteHandler.OldPosition = SpriteHandler.Position;
             _inputHandler.HandleInputs();
             HandleMovement(gameTime);
+
+            MoveDown(9.8f, gameTime);
 
             HandleSpriteState();
 
@@ -67,13 +70,13 @@ namespace HogiaSpel.Entities
                 {
                     if (entity is IBlock)
                     {
-                        HandleBlockCollision(entity);
+                        HandleBlockCollision(entity, gameTime);
                     }
                 }
             }
         }
 
-        private void HandleBlockCollision(IEntity entity)
+        private void HandleBlockCollision(IEntity entity, GameTime gameTime)
         {
             if (Rectangle.Intersects(entity.Rectangle))
             {
@@ -113,18 +116,65 @@ namespace HogiaSpel.Entities
                 {
                     if ((collisionDepth.Y == entity.Rectangle.Height) || (collisionDepth.Y == (entity.Rectangle.Height * -1)))
                     {
-                        MoveRight(collisionDepth.X);
+                        if (collisionDepth.X < 0)
+                        {
+                            MoveLeft(Speed, gameTime);
+                        }
+                        else
+                        {
+                            MoveRight(Speed, gameTime);
+                        }
+                        
                         Speed = BaseSpeed;
                     }
                     else if ((collisionDepth.X == entity.Rectangle.Width) || (collisionDepth.X == (entity.Rectangle.Width * -1)))
                     {
-                        MoveDown(collisionDepth.Y);
+                        if (collisionDepth.Y < 0)
+                        {
+                            MoveUp(Speed, gameTime);
+                        }
+                        else
+                        {
+                            MoveDown(Speed, gameTime);
+                        }
                         Speed = BaseSpeed;
                     }
                     else
                     {
-                        MoveRight(collisionDepth.X);
-                        MoveDown(collisionDepth.Y);
+                        var deltaX = SpriteHandler.OldPosition.X - SpriteHandler.Position.X;
+                        var deltaY = SpriteHandler.OldPosition.Y - SpriteHandler.Position.Y;
+
+                        if (deltaX > deltaY)
+                        {
+                            if (deltaX > 0)
+                            {
+                                //kommer från höger
+                                MoveLeft(Speed, gameTime);
+
+                            }
+                            else if (deltaX < 0)
+                            {
+                                //kommer från vänster
+                                MoveRight(Speed, gameTime);
+                            }
+                        }
+                        else if (deltaY > deltaX)
+                        {
+                            if (deltaY > 0)
+                            {
+                                //kommer nerefrån
+                                MoveUp(9.8f, gameTime);
+                            }
+                            else if (deltaY < 0)
+                            {
+                                //kommer uppefrån
+                                MoveDown(9.8f, gameTime);
+                            }
+                        }
+                        else
+                        {
+                            //diagonalt
+                        }
                         Speed = BaseSpeed;
                     }
                 }
@@ -137,16 +187,19 @@ namespace HogiaSpel.Entities
             {
                 for (int i = 0; i < _inputHandler.OldEvents.Count; i++)
                 {
-                    var moveEvent = (MoveEvent)_inputHandler.OldEvents[i];
-                    if (moveEvent.Direction == DirectionEnum.Right)
+                    if (_inputHandler.OldEvents[i] is MoveEvent)
                     {
-                        SpriteHandler.ChangeState(SpriteKeys.Quote.StandRight);
-                        break;
-                    }
-                    else if (moveEvent.Direction == DirectionEnum.Left)
-                    {
-                        SpriteHandler.ChangeState(SpriteKeys.Quote.StandLeft);
-                        break;
+                        var moveEvent = (MoveEvent)_inputHandler.OldEvents[i];
+                        if (moveEvent.Direction == DirectionEnum.Right)
+                        {
+                            SpriteHandler.ChangeState(SpriteKeys.Quote.StandRight);
+                            break;
+                        }
+                        else if (moveEvent.Direction == DirectionEnum.Left)
+                        {
+                            SpriteHandler.ChangeState(SpriteKeys.Quote.StandLeft);
+                            break;
+                        }
                     }
                 }
                 
@@ -219,6 +272,11 @@ namespace HogiaSpel.Entities
             {
                 Speed = TopSpeed;
             }
+        }
+
+        private void Jump()
+        {
+
         }
 
         private void Move(GameTime gameTime)
