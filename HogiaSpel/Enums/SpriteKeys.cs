@@ -6,6 +6,8 @@
         {
             public static string StandRight = "quote-stand-right";
             public static string StandLeft = "quote-stand-left";
+            public static string PushRight = "quote-push-right";
+            public static string PushLeft = "quote-push-left";
             public static string RunRight = "quote-run-right";
             public static string RunLeft = "quote-run-left";
         }

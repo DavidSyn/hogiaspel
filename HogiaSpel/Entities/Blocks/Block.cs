@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using HogiaSpel.Enums;
 using HogiaSpel.CollisionDetection;
+using HogiaSpel.Extensions;
 
 namespace HogiaSpel.Entities.Blocks
 {
@@ -42,13 +43,21 @@ namespace HogiaSpel.Entities.Blocks
 
         public override void CheckCollision(GameTime gameTime)
         {
-            //var grid = CollisionGrid.Instance;
-            //foreach (var entity in grid.GetEntitiesWithinCell(CollisionCellPositions))
-            //{
-            //    if (Id != entity.Id)
-            //    {
-            //    }
-            //}
+            var grid = CollisionGrid.Instance;
+            foreach (var entity in grid.GetEntitiesWithinCell(CollisionCellPositions))
+            {
+                if (Id != entity.Id)
+                {
+                    if (entity is PlayerAvatar)
+                    {
+                        if (Rectangle.Intersects(entity.Rectangle))
+                        {
+                            var collisionDepth = Rectangle.GetIntersectionDirection(entity.Rectangle);
+                            MoveRight(collisionDepth.X);
+                        }
+                    }
+                }
+            }
         }
     }
 }

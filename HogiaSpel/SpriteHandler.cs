@@ -17,7 +17,7 @@ namespace HogiaSpel
         {
             Animations = new Dictionary<string, Animation>();
             Position = position;
-            _currentState = null;
+            _currentState = string.Empty;
         }
 
         public void InitializeAnimation(string state, Texture2D sprite, int frameWidth, int frameHeight, int frameCount, int frametime, Color color, float scale, bool looping)
