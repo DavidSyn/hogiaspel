@@ -4,12 +4,12 @@ namespace HogiaSpel.Entities
 {
     public interface IAbstractEntity : IEntity
     {
-        void MoveUp(GameTime gameTime);
+        void MoveUp(float speed, GameTime gameTime);
 
-        void MoveDown(GameTime gameTime);
+        void MoveDown(float speed, GameTime gameTime);
 
-        void MoveRight(GameTime gameTime);
+        void MoveRight(float speed, GameTime gameTime);
 
-        void MoveLeft(GameTime gameTime);
+        void MoveLeft(float speed, GameTime gameTime);
     }
 }

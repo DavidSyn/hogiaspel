@@ -51,6 +51,8 @@ namespace HogiaSpel.Entities
             _inputHandler.HandleInputs();
             HandleMovement(gameTime);
 
+            HandleSpriteState();
+
             var grid = CollisionGrid.Instance;
             CollisionCellPositions = grid.UpdateCellPosition(this);
             SpriteHandler.Update(gameTime);
@@ -97,19 +99,13 @@ namespace HogiaSpel.Entities
                     }
                     else if ((collisionDepth.X == entity.Rectangle.Width) || (collisionDepth.X == (entity.Rectangle.Width * -1)))
                     {
-                        float x = SpriteHandler.Position.X;
-                        float y = SpriteHandler.Position.Y;
-                        y = SpriteHandler.Position.Y + collisionDepth.Y;
-                        SpriteHandler.Position = new Vector2(x, y);
+                        MoveDown(collisionDepth.Y);
                         Speed = BaseSpeed;
                     }
                     else
                     {
-                        float x = SpriteHandler.Position.X;
-                        float y = SpriteHandler.Position.Y;
-                        y = SpriteHandler.Position.Y + collisionDepth.Y;
-                        x = SpriteHandler.Position.X + collisionDepth.X;
-                        SpriteHandler.Position = new Vector2(x, y);
+                        MoveRight(collisionDepth.X);
+                        MoveDown(collisionDepth.Y);
                         Speed = BaseSpeed;
                     }
                 }
@@ -117,29 +113,66 @@ namespace HogiaSpel.Entities
                 {
                     if ((collisionDepth.Y == entity.Rectangle.Height) || (collisionDepth.Y == (entity.Rectangle.Height * -1)))
                     {
-                        float x = SpriteHandler.Position.X;
-                        float y = SpriteHandler.Position.Y;
-                        x = SpriteHandler.Position.X + collisionDepth.X;
-                        SpriteHandler.Position = new Vector2(x, y);
+                        MoveRight(collisionDepth.X);
                         Speed = BaseSpeed;
                     }
                     else if ((collisionDepth.X == entity.Rectangle.Width) || (collisionDepth.X == (entity.Rectangle.Width * -1)))
                     {
-                        float x = SpriteHandler.Position.X;
-                        float y = SpriteHandler.Position.Y;
-                        y = SpriteHandler.Position.Y + collisionDepth.Y;
-                        SpriteHandler.Position = new Vector2(x, y);
+                        MoveDown(collisionDepth.Y);
                         Speed = BaseSpeed;
                     }
                     else
                     {
-                        float x = SpriteHandler.Position.X;
-                        float y = SpriteHandler.Position.Y;
-                        y = SpriteHandler.Position.Y + collisionDepth.Y;
-                        x = SpriteHandler.Position.X + collisionDepth.X;
-                        SpriteHandler.Position = new Vector2(x, y);
+                        MoveRight(collisionDepth.X);
+                        MoveDown(collisionDepth.Y);
                         Speed = BaseSpeed;
                     }
+                }
+            }
+        }
+
+        private void HandleSpriteState()
+        {
+            if (CurrentAccelerationDirection == DirectionEnum.NoDirection)
+            {
+                for (int i = 0; i < _inputHandler.OldEvents.Count; i++)
+                {
+                    var moveEvent = (MoveEvent)_inputHandler.OldEvents[i];
+                    if (moveEvent.Direction == DirectionEnum.Right)
+                    {
+                        SpriteHandler.ChangeState(SpriteKeys.Quote.StandRight);
+                        break;
+                    }
+                    else if (moveEvent.Direction == DirectionEnum.Left)
+                    {
+                        SpriteHandler.ChangeState(SpriteKeys.Quote.StandLeft);
+                        break;
+                    }
+                }
+                
+            }
+            else if (CurrentAccelerationDirection == DirectionEnum.Right)
+            {
+                if (_pushDirection == DirectionEnum.Right)
+                {
+                    SpriteHandler.ChangeState(SpriteKeys.Quote.PushRight);
+                    _pushDirection = DirectionEnum.NoDirection;
+                }
+                else
+                {
+                    SpriteHandler.ChangeState(SpriteKeys.Quote.RunRight);
+                }
+            }
+            else if (CurrentAccelerationDirection == DirectionEnum.Left)
+            {
+                if (_pushDirection == DirectionEnum.Left)
+                {
+                    SpriteHandler.ChangeState(SpriteKeys.Quote.PushLeft);
+                    _pushDirection = DirectionEnum.NoDirection;
+                }
+                else
+                {
+                    SpriteHandler.ChangeState(SpriteKeys.Quote.RunLeft);
                 }
             }
         }
@@ -150,25 +183,9 @@ namespace HogiaSpel.Entities
             {
                 if (_inputHandler.OldEvents.Any(x => x is MoveEvent))
                 {
-                    for (int i = 0; i < _inputHandler.OldEvents.Count; i++)
-                    {
-                        var moveEvent = (MoveEvent)_inputHandler.OldEvents[i];
-                        if (moveEvent.Direction == DirectionEnum.Right)
-                        {
-                            SpriteHandler.ChangeState(SpriteKeys.Quote.StandRight);
-                            CurrentAccelerationDirection = DirectionEnum.NoDirection;
-                            CalculateSpeed();
-                            break;
-                        }
-                        else if (moveEvent.Direction == DirectionEnum.Left)
-                        {
-                            SpriteHandler.ChangeState(SpriteKeys.Quote.StandLeft);
-                            CurrentAccelerationDirection = DirectionEnum.NoDirection;
-                            CalculateSpeed();
-                            break;
-                        }
-                    }
-
+                    
+                    CurrentAccelerationDirection = DirectionEnum.NoDirection;
+                    CalculateSpeed();
                 }
             }
             else
@@ -215,28 +232,10 @@ namespace HogiaSpel.Entities
                 //    MoveDown(gameTime);
                 //    break;
                 case DirectionEnum.Right:
-                    MoveRight(gameTime);
-                    if (_pushDirection == DirectionEnum.Right)
-                    {
-                        SpriteHandler.ChangeState(SpriteKeys.Quote.PushRight);
-                        _pushDirection = DirectionEnum.NoDirection;
-                    }
-                    else
-                    {
-                        SpriteHandler.ChangeState(SpriteKeys.Quote.RunRight);
-                    }
+                    MoveRight(Speed, gameTime);
                     break;
                 case DirectionEnum.Left:
-                    MoveLeft(gameTime);
-                    if (_pushDirection == DirectionEnum.Left)
-                    {
-                        SpriteHandler.ChangeState(SpriteKeys.Quote.PushLeft);
-                        _pushDirection = DirectionEnum.NoDirection;
-                    }
-                    else
-                    {
-                        SpriteHandler.ChangeState(SpriteKeys.Quote.RunLeft);
-                    }
+                    MoveLeft(Speed, gameTime);
                     break;
                 default:
                     break;
