@@ -9,6 +9,7 @@ namespace HogiaSpel.Entities
     public interface IEntity
     {
         Guid Id { get; }
+        float Gravity { get; }
         float Speed { get; }
         float BaseSpeed { get; }
         float TopSpeed { get; }

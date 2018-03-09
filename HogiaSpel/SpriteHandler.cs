@@ -8,7 +8,6 @@ namespace HogiaSpel
     {
         public Dictionary<string, Animation> Animations { get; protected set; }
         public Vector2 Position { get; set; }
-        public Vector2 OldPosition { get; set; }
         public int CurrentFrameHeight { get { return (!string.IsNullOrEmpty(_currentState)) ? Animations[_currentState].FrameHeight : 0; } }
         public int CurrentFrameWidth { get { return (!string.IsNullOrEmpty(_currentState)) ? Animations[_currentState].FrameWidth : 0; } }
 

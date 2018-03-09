@@ -48,11 +48,10 @@ namespace HogiaSpel.Entities
 
         public override void Update(GameTime gameTime)
         {
-            SpriteHandler.OldPosition = SpriteHandler.Position;
             _inputHandler.HandleInputs();
             HandleMovement(gameTime);
 
-            MoveDown(9.8f, gameTime);
+            MoveDown(Gravity, gameTime);
 
             HandleSpriteState();
 
@@ -83,99 +82,66 @@ namespace HogiaSpel.Entities
                 var collisionDepth = Rectangle.GetIntersectionDirection(entity.Rectangle);
                 if (entity is Block)
                 {
-                    if ((collisionDepth.Y == entity.Rectangle.Height) || (collisionDepth.Y == (entity.Rectangle.Height * -1)))
+                    if (Rectangle.CollisionDown(entity.Rectangle))
+                    {
+                        MoveUp(Gravity, gameTime);
+                    }
+                    if (Rectangle.CollisionLeft(entity.Rectangle) || Rectangle.CollisionRight(entity.Rectangle))
                     {
                         Speed = BaseSpeed / 2;
 
                         if (CurrentAccelerationDirection == DirectionEnum.Left)
                         {
                             _pushDirection = DirectionEnum.Left;
+                            if (!Rectangle.CollisionDown(entity.Rectangle))
+                            {
+                                MoveDown(Gravity, gameTime);
+                            }
                         }
                         else if (CurrentAccelerationDirection == DirectionEnum.Right)
                         {
                             _pushDirection = DirectionEnum.Right;
+                            if (!Rectangle.CollisionDown(entity.Rectangle))
+                            {
+                                MoveDown(Gravity, gameTime);
+                            }
                         }
                         else
                         {
                             _pushDirection = DirectionEnum.NoDirection;
+                            if (!Rectangle.CollisionDown(entity.Rectangle))
+                            {
+                                MoveDown(Gravity, gameTime);
+                            }
                         }
-                    }
-                    else if ((collisionDepth.X == entity.Rectangle.Width) || (collisionDepth.X == (entity.Rectangle.Width * -1)))
-                    {
-                        MoveDown(collisionDepth.Y);
-                        Speed = BaseSpeed;
-                    }
-                    else
-                    {
-                        MoveRight(collisionDepth.X);
-                        MoveDown(collisionDepth.Y);
-                        Speed = BaseSpeed;
                     }
                 }
                 else
                 {
-                    if ((collisionDepth.Y == entity.Rectangle.Height) || (collisionDepth.Y == (entity.Rectangle.Height * -1)))
+                    if (Rectangle.CollisionDown(entity.Rectangle))
                     {
-                        if (collisionDepth.X < 0)
-                        {
-                            MoveLeft(Speed, gameTime);
-                        }
-                        else
+                        MoveUp(Gravity, gameTime);
+                    }
+                    if (Rectangle.CollisionRight(entity.Rectangle) || Rectangle.CollisionLeft(entity.Rectangle))
+                    {
+                        if (CurrentAccelerationDirection == DirectionEnum.Left)
                         {
                             MoveRight(Speed, gameTime);
-                        }
-                        
-                        Speed = BaseSpeed;
-                    }
-                    else if ((collisionDepth.X == entity.Rectangle.Width) || (collisionDepth.X == (entity.Rectangle.Width * -1)))
-                    {
-                        if (collisionDepth.Y < 0)
-                        {
-                            MoveUp(Speed, gameTime);
-                        }
-                        else
-                        {
-                            MoveDown(Speed, gameTime);
-                        }
-                        Speed = BaseSpeed;
-                    }
-                    else
-                    {
-                        var deltaX = SpriteHandler.OldPosition.X - SpriteHandler.Position.X;
-                        var deltaY = SpriteHandler.OldPosition.Y - SpriteHandler.Position.Y;
-
-                        if (deltaX > deltaY)
-                        {
-                            if (deltaX > 0)
+                            Speed = BaseSpeed;
+                            if (!Rectangle.CollisionDown(entity.Rectangle))
                             {
-                                //kommer från höger
-                                MoveLeft(Speed, gameTime);
-
-                            }
-                            else if (deltaX < 0)
-                            {
-                                //kommer från vänster
-                                MoveRight(Speed, gameTime);
+                                MoveDown(Gravity, gameTime);
                             }
                         }
-                        else if (deltaY > deltaX)
+                        else if (CurrentAccelerationDirection == DirectionEnum.Right)
                         {
-                            if (deltaY > 0)
+                            MoveLeft(Speed, gameTime);
+                            Speed = BaseSpeed;
+                            if (!Rectangle.CollisionDown(entity.Rectangle))
                             {
-                                //kommer nerefrån
-                                MoveUp(9.8f, gameTime);
-                            }
-                            else if (deltaY < 0)
-                            {
-                                //kommer uppefrån
-                                MoveDown(9.8f, gameTime);
+                                MoveDown(Gravity, gameTime);
                             }
                         }
-                        else
-                        {
-                            //diagonalt
-                        }
-                        Speed = BaseSpeed;
                     }
                 }
             }

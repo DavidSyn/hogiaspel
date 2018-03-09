@@ -10,6 +10,7 @@ namespace HogiaSpel.Entities
     public abstract class AbstractEntity : IAbstractEntity
     {
         public Guid Id { get; protected set; }
+        public float Gravity { get { return 90.8f; } }
         public float Speed { get; protected set; }
         public float BaseSpeed { get; protected set; }
         public float TopSpeed { get; protected set; }
@@ -60,78 +61,6 @@ namespace HogiaSpel.Entities
             float y = SpriteHandler.Position.Y;
             x = SpriteHandler.Position.X - (speed * deltatime);
             SpriteHandler.Position = new Vector2(x, y);
-        }
-
-        public bool CheckCollisionFromLeft()
-        {
-            var grid = CollisionGrid.Instance;
-            foreach (var entity in grid.GetEntitiesWithinCell(CollisionCellPositions))
-            {
-                if (Id != entity.Id)
-                {
-                    Rectangle temp = entity.Rectangle;
-                    temp.Location = new Point(entity.Rectangle.Location.X - 1, entity.Rectangle.Location.Y);
-                    if (Rectangle.Intersects(temp))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        public bool CheckCollisionFromRight()
-        {
-            var grid = CollisionGrid.Instance;
-            foreach (var entity in grid.GetEntitiesWithinCell(CollisionCellPositions))
-            {
-                if (Id != entity.Id)
-                {
-                    Rectangle temp = entity.Rectangle;
-                    temp.Location = new Point(entity.Rectangle.Location.X + 1, entity.Rectangle.Location.Y);
-                    if (Rectangle.Intersects(temp))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        public bool CheckCollisionFromTop()
-        {
-            var grid = CollisionGrid.Instance;
-            foreach (var entity in grid.GetEntitiesWithinCell(CollisionCellPositions))
-            {
-                if (Id != entity.Id)
-                {
-                    Rectangle temp = entity.Rectangle;
-                    temp.Location = new Point(entity.Rectangle.Location.X , entity.Rectangle.Location.Y - 1);
-                    if (Rectangle.Intersects(temp))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        public bool CheckCollisionFromBottom()
-        {
-            var grid = CollisionGrid.Instance;
-            foreach (var entity in grid.GetEntitiesWithinCell(CollisionCellPositions))
-            {
-                if (Id != entity.Id)
-                {
-                    Rectangle temp = entity.Rectangle;
-                    temp.Location = new Point(entity.Rectangle.Location.X, entity.Rectangle.Location.Y + 1);
-                    if (Rectangle.Intersects(temp))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
         }
 
         public virtual void Initialize(Vector2 position)

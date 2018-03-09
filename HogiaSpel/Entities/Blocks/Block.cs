@@ -35,9 +35,10 @@ namespace HogiaSpel.Entities.Blocks
 
         public override void Update(GameTime gameTime)
         {
+            MoveDown(Gravity, gameTime);
+
             var grid = CollisionGrid.Instance;
             CollisionCellPositions = grid.UpdateCellPosition(this);
-
             SpriteHandler.Update(gameTime);
         }
 
@@ -50,13 +51,28 @@ namespace HogiaSpel.Entities.Blocks
                 {
                     if (entity is PlayerAvatar)
                     {
+                        HandlePlayerAvatarCollision(gameTime, entity);
+                    }
+                    if (entity is IBlock)
+                    {
                         if (Rectangle.Intersects(entity.Rectangle))
                         {
-                            var collisionDepth = Rectangle.GetIntersectionDirection(entity.Rectangle);
-                            MoveRight(collisionDepth.X);
+                            if (Rectangle.CollisionDown(entity.Rectangle))
+                            {
+                                MoveUp(Gravity, gameTime);
+                            }
                         }
                     }
                 }
+            }
+        }
+
+        private void HandlePlayerAvatarCollision(GameTime gameTime, IEntity entity)
+        {
+            if (Rectangle.Intersects(entity.Rectangle))
+            {
+                var collisionDepth = Rectangle.GetIntersectionDirection(entity.Rectangle);
+                MoveRight(collisionDepth.X);
             }
         }
     }
