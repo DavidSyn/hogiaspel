@@ -10,8 +10,9 @@ namespace HogiaSpel.Entities
     public abstract class AbstractEntity : IAbstractEntity
     {
         public Guid Id { get; protected set; }
-        public float Gravity { get { return 90.8f; } }
+        public float Gravity { get { return 140.8f; } }
         public float Speed { get; protected set; }
+        public float JumpForce { get; protected set; }
         public float BaseSpeed { get; protected set; }
         public float TopSpeed { get; protected set; }
         public float Acceleration { get; protected set; }

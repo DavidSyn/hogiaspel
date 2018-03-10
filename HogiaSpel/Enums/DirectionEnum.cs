@@ -4,6 +4,8 @@
     {
         Up,
         Down,
+        UpRight,
+        UpLeft,
         Right,
         Left,
         NoDirection
