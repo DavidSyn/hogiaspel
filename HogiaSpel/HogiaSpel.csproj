@@ -50,6 +50,7 @@
     <Compile Include="Entities\IAbstractEntity.cs" />
     <Compile Include="Entities\Blocks\MetalBlock.cs" />
     <Compile Include="Entities\PowerUp.cs" />
+    <Compile Include="Events\JumpEvent.cs" />
     <Compile Include="Extensions\RectangleExtensions.cs" />
     <Compile Include="Factories\EntityFactory.cs" />
     <Compile Include="Enums\SpriteKeys.cs" />

@@ -17,6 +17,8 @@ namespace HogiaSpel.Factories
             //Load player
             sprites.Load(SpriteKeys.Quote.StandRight, loader.Load<Texture2D>("sprites/quote/quote-stand-right"));
             sprites.Load(SpriteKeys.Quote.StandLeft, loader.Load<Texture2D>("sprites/quote/quote-stand-left"));
+            sprites.Load(SpriteKeys.Quote.PushRight, loader.Load<Texture2D>("sprites/quote/quote-push-right"));
+            sprites.Load(SpriteKeys.Quote.PushLeft, loader.Load<Texture2D>("sprites/quote/quote-push-left"));
             sprites.Load(SpriteKeys.Quote.RunRight, loader.Load<Texture2D>("sprites/quote/quote-run-right"));
             sprites.Load(SpriteKeys.Quote.RunLeft, loader.Load<Texture2D>("sprites/quote/quote-run-left"));
 

@@ -33,11 +33,11 @@ namespace HogiaSpel
             _currentKeyboardState = Keyboard.GetState();
 
             var result = new List<IEvent>();
-            result = AddEvents(_currentKeyboardState);
+            result = AddEvents();
             return result;
         }
 
-        private List<IEvent> AddEvents(KeyboardState newState)
+        private List<IEvent> AddEvents()
         {
             var temp = new List<IEvent>();
             //if (_currentKeyboardState.IsKeyDown(Keys.Up))
@@ -57,6 +57,11 @@ namespace HogiaSpel
             else if (_currentKeyboardState.IsKeyDown(Keys.Left))
             {
                 temp.Add(new MoveEvent(DirectionEnum.Left));
+            }
+
+            if (_currentKeyboardState.IsKeyDown(Keys.Space))
+            {
+                temp.Add(new JumpEvent());
             }
             return temp;
         }

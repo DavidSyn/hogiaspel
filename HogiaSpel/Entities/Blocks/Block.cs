@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using HogiaSpel.Enums;
 using HogiaSpel.CollisionDetection;
+using HogiaSpel.Extensions;
 
 namespace HogiaSpel.Entities.Blocks
 {
@@ -34,21 +35,45 @@ namespace HogiaSpel.Entities.Blocks
 
         public override void Update(GameTime gameTime)
         {
+            MoveDown(Gravity, gameTime);
+
             var grid = CollisionGrid.Instance;
             CollisionCellPositions = grid.UpdateCellPosition(this);
-
             SpriteHandler.Update(gameTime);
         }
 
         public override void CheckCollision(GameTime gameTime)
         {
-            //var grid = CollisionGrid.Instance;
-            //foreach (var entity in grid.GetEntitiesWithinCell(CollisionCellPositions))
-            //{
-            //    if (Id != entity.Id)
-            //    {
-            //    }
-            //}
+            var grid = CollisionGrid.Instance;
+            foreach (var entity in grid.GetEntitiesWithinCell(CollisionCellPositions))
+            {
+                if (Id != entity.Id)
+                {
+                    if (entity is PlayerAvatar)
+                    {
+                        HandlePlayerAvatarCollision(gameTime, entity);
+                    }
+                    if (entity is IBlock)
+                    {
+                        if (Rectangle.Intersects(entity.Rectangle))
+                        {
+                            if (Rectangle.CollisionDown(entity.Rectangle))
+                            {
+                                MoveUp(Gravity, gameTime);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void HandlePlayerAvatarCollision(GameTime gameTime, IEntity entity)
+        {
+            if (Rectangle.Intersects(entity.Rectangle))
+            {
+                var collisionDepth = Rectangle.GetIntersectionDirection(entity.Rectangle);
+                MoveRight(collisionDepth.X);
+            }
         }
     }
 }

@@ -29,5 +29,49 @@ namespace HogiaSpel.Extensions
             float depthY = distanceY > 0 ? minDistanceY - distanceY : -minDistanceY - distanceY;
             return new Vector2(depthX, depthY);
         }
+
+        public static bool CollisionDown(this Rectangle rectA, Rectangle rectB)
+        {
+            Rectangle temp = rectA;
+            temp.Location = new Point(rectA.Location.X, (rectA.Location.Y + 1));
+            if (temp.Intersects(rectB))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool CollisionUp(this Rectangle rectA, Rectangle rectB)
+        {
+            Rectangle temp = rectA;
+            temp.Location = new Point(rectA.Location.X, (rectA.Location.Y - 1));
+            if (rectA.Intersects(rectB))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool CollisionRight(this Rectangle rectA, Rectangle rectB)
+        {
+            Rectangle temp = rectA;
+            temp.Location = new Point((rectA.Location.X + 1), rectA.Location.Y);
+            if (rectA.Intersects(rectB))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool CollisionLeft(this Rectangle rectA, Rectangle rectB)
+        {
+            Rectangle temp = rectA;
+            temp.Location = new Point((rectA.Location.X - 1), rectA.Location.Y);
+            if (rectA.Intersects(rectB))
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

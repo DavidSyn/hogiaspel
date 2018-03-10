@@ -13,6 +13,7 @@ namespace HogiaSpel.Entities
     public class PlayerAvatar : AbstractEntity
     {
         private InputHandler _inputHandler;
+        private DirectionEnum _pushDirection;
 
         public override void Initialize(Vector2 position)
         {
@@ -24,11 +25,14 @@ namespace HogiaSpel.Entities
             TopSpeed = 400;
             Acceleration = 1.015f;
             CurrentAccelerationDirection = DirectionEnum.NoDirection;
+            _pushDirection = DirectionEnum.NoDirection;
 
             var sprites = Sprites.Instance;
             SpriteHandler = new SpriteHandler(position);
             SpriteHandler.InitializeAnimation(SpriteKeys.Quote.RunRight, sprites.GetSprite(SpriteKeys.Quote.RunRight), 64, 64, 4, 80, Color.White, 1f, true);
             SpriteHandler.InitializeAnimation(SpriteKeys.Quote.RunLeft, sprites.GetSprite(SpriteKeys.Quote.RunLeft), 64, 64, 4, 80, Color.White, 1f, true);
+            SpriteHandler.InitializeAnimation(SpriteKeys.Quote.PushRight, sprites.GetSprite(SpriteKeys.Quote.PushRight), 64, 64, 4, 80, Color.White, 1f, true);
+            SpriteHandler.InitializeAnimation(SpriteKeys.Quote.PushLeft, sprites.GetSprite(SpriteKeys.Quote.PushLeft), 64, 64, 4, 80, Color.White, 1f, true);
             SpriteHandler.InitializeAnimation(SpriteKeys.Quote.StandRight, sprites.GetSprite(SpriteKeys.Quote.StandRight), 64, 64, 1, 80, Color.White, 1f, true);
             SpriteHandler.InitializeAnimation(SpriteKeys.Quote.StandLeft, sprites.GetSprite(SpriteKeys.Quote.StandLeft), 64, 64, 1, 80, Color.White, 1f, true);
             SpriteHandler.Initialize(SpriteKeys.Quote.StandRight);
@@ -47,6 +51,10 @@ namespace HogiaSpel.Entities
             _inputHandler.HandleInputs();
             HandleMovement(gameTime);
 
+            MoveDown(Gravity, gameTime);
+
+            HandleSpriteState();
+
             var grid = CollisionGrid.Instance;
             CollisionCellPositions = grid.UpdateCellPosition(this);
             SpriteHandler.Update(gameTime);
@@ -61,41 +69,129 @@ namespace HogiaSpel.Entities
                 {
                     if (entity is IBlock)
                     {
-                        HandleBlockCollision(entity);
+                        HandleBlockCollision(entity, gameTime);
                     }
                 }
             }
         }
 
-        private void HandleBlockCollision(IEntity entity)
+        private void HandleBlockCollision(IEntity entity, GameTime gameTime)
         {
             if (Rectangle.Intersects(entity.Rectangle))
             {
                 var collisionDepth = Rectangle.GetIntersectionDirection(entity.Rectangle);
-                if ((collisionDepth.Y == entity.Rectangle.Height) || (collisionDepth.Y == (entity.Rectangle.Height * -1)))
+                if (entity is Block)
                 {
-                    float x = SpriteHandler.Position.X;
-                    float y = SpriteHandler.Position.Y;
-                    x = SpriteHandler.Position.X + collisionDepth.X;
-                    SpriteHandler.Position = new Vector2(x, y);
-                    Speed = BaseSpeed;
-                }
-                else if ((collisionDepth.X == entity.Rectangle.Width) || (collisionDepth.X == (entity.Rectangle.Width * -1)))
-                {
-                    float x = SpriteHandler.Position.X;
-                    float y = SpriteHandler.Position.Y;
-                    y = SpriteHandler.Position.Y + collisionDepth.Y;
-                    SpriteHandler.Position = new Vector2(x, y);
-                    Speed = BaseSpeed;
+                    if (Rectangle.CollisionDown(entity.Rectangle))
+                    {
+                        MoveUp(Gravity, gameTime);
+                    }
+                    if (Rectangle.CollisionLeft(entity.Rectangle) || Rectangle.CollisionRight(entity.Rectangle))
+                    {
+                        Speed = BaseSpeed / 2;
+
+                        if (CurrentAccelerationDirection == DirectionEnum.Left)
+                        {
+                            _pushDirection = DirectionEnum.Left;
+                            if (!Rectangle.CollisionDown(entity.Rectangle))
+                            {
+                                MoveDown(Gravity, gameTime);
+                            }
+                        }
+                        else if (CurrentAccelerationDirection == DirectionEnum.Right)
+                        {
+                            _pushDirection = DirectionEnum.Right;
+                            if (!Rectangle.CollisionDown(entity.Rectangle))
+                            {
+                                MoveDown(Gravity, gameTime);
+                            }
+                        }
+                        else
+                        {
+                            _pushDirection = DirectionEnum.NoDirection;
+                            if (!Rectangle.CollisionDown(entity.Rectangle))
+                            {
+                                MoveDown(Gravity, gameTime);
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    float x = SpriteHandler.Position.X;
-                    float y = SpriteHandler.Position.Y;
-                    y = SpriteHandler.Position.Y + collisionDepth.Y;
-                    x = SpriteHandler.Position.X + collisionDepth.X;
-                    SpriteHandler.Position = new Vector2(x, y);
-                    Speed = BaseSpeed;
+                    if (Rectangle.CollisionDown(entity.Rectangle))
+                    {
+                        MoveUp(Gravity, gameTime);
+                    }
+                    if (Rectangle.CollisionRight(entity.Rectangle) || Rectangle.CollisionLeft(entity.Rectangle))
+                    {
+                        if (CurrentAccelerationDirection == DirectionEnum.Left)
+                        {
+                            MoveRight(Speed, gameTime);
+                            Speed = BaseSpeed;
+                            if (!Rectangle.CollisionDown(entity.Rectangle))
+                            {
+                                MoveDown(Gravity, gameTime);
+                            }
+                        }
+                        else if (CurrentAccelerationDirection == DirectionEnum.Right)
+                        {
+                            MoveLeft(Speed, gameTime);
+                            Speed = BaseSpeed;
+                            if (!Rectangle.CollisionDown(entity.Rectangle))
+                            {
+                                MoveDown(Gravity, gameTime);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void HandleSpriteState()
+        {
+            if (CurrentAccelerationDirection == DirectionEnum.NoDirection)
+            {
+                for (int i = 0; i < _inputHandler.OldEvents.Count; i++)
+                {
+                    if (_inputHandler.OldEvents[i] is MoveEvent)
+                    {
+                        var moveEvent = (MoveEvent)_inputHandler.OldEvents[i];
+                        if (moveEvent.Direction == DirectionEnum.Right)
+                        {
+                            SpriteHandler.ChangeState(SpriteKeys.Quote.StandRight);
+                            break;
+                        }
+                        else if (moveEvent.Direction == DirectionEnum.Left)
+                        {
+                            SpriteHandler.ChangeState(SpriteKeys.Quote.StandLeft);
+                            break;
+                        }
+                    }
+                }
+                
+            }
+            else if (CurrentAccelerationDirection == DirectionEnum.Right)
+            {
+                if (_pushDirection == DirectionEnum.Right)
+                {
+                    SpriteHandler.ChangeState(SpriteKeys.Quote.PushRight);
+                    _pushDirection = DirectionEnum.NoDirection;
+                }
+                else
+                {
+                    SpriteHandler.ChangeState(SpriteKeys.Quote.RunRight);
+                }
+            }
+            else if (CurrentAccelerationDirection == DirectionEnum.Left)
+            {
+                if (_pushDirection == DirectionEnum.Left)
+                {
+                    SpriteHandler.ChangeState(SpriteKeys.Quote.PushLeft);
+                    _pushDirection = DirectionEnum.NoDirection;
+                }
+                else
+                {
+                    SpriteHandler.ChangeState(SpriteKeys.Quote.RunLeft);
                 }
             }
         }
@@ -106,25 +202,9 @@ namespace HogiaSpel.Entities
             {
                 if (_inputHandler.OldEvents.Any(x => x is MoveEvent))
                 {
-                    for (int i = 0; i < _inputHandler.OldEvents.Count; i++)
-                    {
-                        var moveEvent = (MoveEvent)_inputHandler.OldEvents[i];
-                        if (moveEvent.Direction == DirectionEnum.Right)
-                        {
-                            SpriteHandler.ChangeState(SpriteKeys.Quote.StandRight);
-                            CurrentAccelerationDirection = DirectionEnum.NoDirection;
-                            CalculateSpeed();
-                            break;
-                        }
-                        else if (moveEvent.Direction == DirectionEnum.Left)
-                        {
-                            SpriteHandler.ChangeState(SpriteKeys.Quote.StandLeft);
-                            CurrentAccelerationDirection = DirectionEnum.NoDirection;
-                            CalculateSpeed();
-                            break;
-                        }
-                    }
-
+                    
+                    CurrentAccelerationDirection = DirectionEnum.NoDirection;
+                    CalculateSpeed();
                 }
             }
             else
@@ -160,6 +240,11 @@ namespace HogiaSpel.Entities
             }
         }
 
+        private void Jump()
+        {
+
+        }
+
         private void Move(GameTime gameTime)
         {
             switch (CurrentAccelerationDirection)
@@ -171,12 +256,10 @@ namespace HogiaSpel.Entities
                 //    MoveDown(gameTime);
                 //    break;
                 case DirectionEnum.Right:
-                    MoveRight(gameTime);
-                    SpriteHandler.ChangeState(SpriteKeys.Quote.RunRight);
+                    MoveRight(Speed, gameTime);
                     break;
                 case DirectionEnum.Left:
-                    MoveLeft(gameTime);
-                    SpriteHandler.ChangeState(SpriteKeys.Quote.RunLeft);
+                    MoveLeft(Speed, gameTime);
                     break;
                 default:
                     break;
