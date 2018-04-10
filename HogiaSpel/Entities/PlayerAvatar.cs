@@ -84,7 +84,7 @@ namespace HogiaSpel.Entities
                 }
             }
 
-            if (!anySolidEntities)
+            if (anySolidEntities)
             {
                 _inAir = true;
             }
@@ -103,7 +103,14 @@ namespace HogiaSpel.Entities
                         {
                             if (_inAir)
                             {
-                                MoveUp((JumpForce + Gravity), gameTime);
+                                if (JumpForce < 0)
+                                {
+                                    MoveUp((JumpForce * -1), gameTime);
+                                }
+                                else
+                                {
+                                    MoveUp((JumpForce), gameTime);
+                                }
                                 JumpForce = JUMPFORCE_DEFAULT;
                                 _inAir = false;
                                 _airTime = 0F;
@@ -154,7 +161,14 @@ namespace HogiaSpel.Entities
                     {
                         if (_inAir)
                         {
-                            MoveUp((JumpForce + Gravity), gameTime);
+                            if (JumpForce < 0)
+                            {
+                                MoveUp((JumpForce * -1), gameTime);
+                            }
+                            else
+                            {
+                                MoveUp((JumpForce), gameTime);
+                            }
                             JumpForce = JUMPFORCE_DEFAULT;
                             _inAir = false;
                             _airTime = 0F;
