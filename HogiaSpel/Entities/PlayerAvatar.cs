@@ -69,24 +69,15 @@ namespace HogiaSpel.Entities
         public override void CheckCollision(GameTime gameTime)
         {
             var grid = CollisionGrid.Instance;
-            var anySolidEntities = false;
             foreach (var entity in grid.GetEntitiesWithinCell(CollisionCellPositions))
             {
                 if (Id != entity.Id)
                 {
                     if (entity is IBlock)
                     {
-                        if (HandleBlockCollision(entity, gameTime))
-                        {
-                            anySolidEntities = true;
-                        }
+                        HandleBlockCollision(entity, gameTime);
                     }
                 }
-            }
-
-            if (anySolidEntities)
-            {
-                _inAir = true;
             }
         }
 
@@ -113,14 +104,18 @@ namespace HogiaSpel.Entities
                                 }
                                 JumpForce = JUMPFORCE_DEFAULT;
                                 _inAir = false;
+                                _inAir = false;
                                 _airTime = 0F;
+                                CurrentAccelerationDirection = DirectionEnum.NoDirection;
                             }
                             else
                             {
                                 MoveUp(Gravity, gameTime);
                                 JumpForce = JUMPFORCE_DEFAULT;
                                 _inAir = false;
+                                _inAir = false;
                                 _airTime = 0F;
+                                CurrentAccelerationDirection = DirectionEnum.NoDirection;
                             }
                         }
                     }
@@ -171,14 +166,18 @@ namespace HogiaSpel.Entities
                             }
                             JumpForce = JUMPFORCE_DEFAULT;
                             _inAir = false;
+                            _inAir = false;
                             _airTime = 0F;
+                            CurrentAccelerationDirection = DirectionEnum.NoDirection;
                         }
                         else
                         {
                             MoveUp(Gravity, gameTime);
                             JumpForce = JUMPFORCE_DEFAULT;
                             _inAir = false;
+                            _inAir = false;
                             _airTime = 0F;
+                            CurrentAccelerationDirection = DirectionEnum.NoDirection;
                         }
 
                         if (!Rectangle.CollisionLeft(entity.Rectangle) || !Rectangle.CollisionRight(entity.Rectangle))

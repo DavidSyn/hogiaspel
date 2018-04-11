@@ -29,7 +29,7 @@ namespace HogiaSpel.Factories
             //sprites.Load(SpriteKeys.PowerUp.Stand, loader.Load<Texture2D>("sprites/powerup/powerup"));
 
             // --- CREATE THINGS --- //
-            EntityFactory.CreateEntity(new PlayerAvatar(), new Vector2(400, 200));
+            EntityFactory.CreateEntity(new PlayerAvatar(), new Vector2(400, 400));
             EntityFactory.CreateEntity(new Block(), new Vector2(336, 400));
 
             EntityFactory.CreateEntity(new DiamondBlock(), new Vector2(272, 464));
