@@ -15,23 +15,22 @@ namespace HogiaSpel.Entities
         private InputHandler _inputHandler;
         private DirectionEnum _pushDirection;
         private bool _inAir = false;
-        private float _airTime = 0F;
-        private static float JUMPFORCE_DEFAULT = 200F;
+        private static float JUMPFORCE_DEFAULT = 700f;
 
         public override void Initialize(Vector2 position)
         {
             _inputHandler = new InputHandler();
             Id = Guid.NewGuid();
             Active = true;
-            Speed = 0;
+            SpeedX = 0;
+            SpeedY = 0;
             JumpForce = JUMPFORCE_DEFAULT;
-            BaseSpeed = 140;
-            TopSpeed = 500;
+            BaseSpeedX = 140;
+            TopSpeedX = 500;
             Acceleration = 1.015f;
             CurrentAccelerationDirection = DirectionEnum.NoDirection;
             _pushDirection = DirectionEnum.NoDirection;
             _inAir = false;
-            _airTime = 0F;
 
             var sprites = Sprites.Instance;
             SpriteHandler = new SpriteHandler(position);
@@ -57,7 +56,7 @@ namespace HogiaSpel.Entities
             _inputHandler.HandleInputs();
             HandleMovement(gameTime);
 
-            MoveDown(Gravity, gameTime);
+            if (_inAir) MoveDown(SpeedY, gameTime);
 
             HandleSpriteState();
 
@@ -92,37 +91,16 @@ namespace HogiaSpel.Entities
                     {
                         if (!Rectangle.CollisionLeft(entity.Rectangle) || !Rectangle.CollisionRight(entity.Rectangle))
                         {
-                            if (_inAir)
-                            {
-                                if (JumpForce < 0)
-                                {
-                                    MoveUp((JumpForce * -1), gameTime);
-                                }
-                                else
-                                {
-                                    MoveUp((JumpForce), gameTime);
-                                }
-                                JumpForce = JUMPFORCE_DEFAULT;
-                                _inAir = false;
-                                _inAir = false;
-                                _airTime = 0F;
-                                CurrentAccelerationDirection = DirectionEnum.NoDirection;
-                            }
-                            else
-                            {
-                                MoveUp(Gravity, gameTime);
-                                JumpForce = JUMPFORCE_DEFAULT;
-                                _inAir = false;
-                                _inAir = false;
-                                _airTime = 0F;
-                                CurrentAccelerationDirection = DirectionEnum.NoDirection;
-                            }
+                            MoveUp(SpeedY, gameTime);
+                            SpeedY = 0;
+                            _inAir = false;
+                            CurrentAccelerationDirection = DirectionEnum.NoDirection;
                         }
                     }
 
                     if (Rectangle.CollisionLeft(entity.Rectangle) || Rectangle.CollisionRight(entity.Rectangle))
                     {
-                        Speed = BaseSpeed / 2;
+                        SpeedX = BaseSpeedX / 2;
 
                         if (CurrentAccelerationDirection == DirectionEnum.Left)
                         {
@@ -154,31 +132,10 @@ namespace HogiaSpel.Entities
                 {
                     if (Rectangle.CollisionDown(entity.Rectangle))
                     {
-                        if (_inAir)
-                        {
-                            if (JumpForce < 0)
-                            {
-                                MoveUp((JumpForce * -1), gameTime);
-                            }
-                            else
-                            {
-                                MoveUp((JumpForce), gameTime);
-                            }
-                            JumpForce = JUMPFORCE_DEFAULT;
-                            _inAir = false;
-                            _inAir = false;
-                            _airTime = 0F;
-                            CurrentAccelerationDirection = DirectionEnum.NoDirection;
-                        }
-                        else
-                        {
-                            MoveUp(Gravity, gameTime);
-                            JumpForce = JUMPFORCE_DEFAULT;
-                            _inAir = false;
-                            _inAir = false;
-                            _airTime = 0F;
-                            CurrentAccelerationDirection = DirectionEnum.NoDirection;
-                        }
+                        MoveUp(SpeedY, gameTime);
+                        SpeedY = 0;
+                        _inAir = false;
+                        CurrentAccelerationDirection = DirectionEnum.NoDirection;
 
                         if (!Rectangle.CollisionLeft(entity.Rectangle) || !Rectangle.CollisionRight(entity.Rectangle))
                         {
@@ -189,8 +146,8 @@ namespace HogiaSpel.Entities
                     {
                         if (CurrentAccelerationDirection == DirectionEnum.Left)
                         {
-                            MoveRight(Speed, gameTime);
-                            Speed = BaseSpeed;
+                            MoveRight(SpeedX, gameTime);
+                            SpeedX = BaseSpeedX;
                             if (!Rectangle.CollisionDown(entity.Rectangle))
                             {
                                 MoveDown(Gravity, gameTime);
@@ -198,8 +155,8 @@ namespace HogiaSpel.Entities
                         }
                         else if (CurrentAccelerationDirection == DirectionEnum.Right)
                         {
-                            MoveLeft(Speed, gameTime);
-                            Speed = BaseSpeed;
+                            MoveLeft(SpeedX, gameTime);
+                            SpeedX = BaseSpeedX;
                             if (!Rectangle.CollisionDown(entity.Rectangle))
                             {
                                 MoveDown(Gravity, gameTime);
@@ -268,14 +225,14 @@ namespace HogiaSpel.Entities
                 if (_inputHandler.OldEvents.Any(x => x is MoveEvent))
                 {
                     CurrentAccelerationDirection = DirectionEnum.NoDirection;
-                    CalculateSpeed();
+                    CalculateSpeedX();
                 }
             }
             else
             {
                 var moveEvent = (MoveEvent)_inputHandler.NewEvents.Where(x => x is MoveEvent).FirstOrDefault();
                 CurrentAccelerationDirection = moveEvent.Direction;
-                CalculateSpeed();
+                CalculateSpeedX();
             }
             if (_inputHandler.NewEvents.Any(x => x is JumpEvent))
             {
@@ -306,76 +263,53 @@ namespace HogiaSpel.Entities
             Move(gameTime);
         }
 
-        private void CalculateSpeed()
+        private void CalculateSpeedX()
         {
             if (CurrentAccelerationDirection == DirectionEnum.NoDirection)
             {
-                Speed = 0;
+                SpeedX = 0;
             }
             else if (CurrentAccelerationDirection == DirectionEnum.Left || CurrentAccelerationDirection == DirectionEnum.Right)
             {
                 if (!_inputHandler.OldEvents.Any(x => x is MoveEvent))
                 {
-                    Speed = BaseSpeed;
+                    SpeedX = BaseSpeedX;
                 }
                 else
                 {
-                    Speed = Speed * Acceleration;
+                    SpeedX = SpeedX * Acceleration;
                 }
             }
 
-            if (Speed > TopSpeed)
+            if (SpeedX > TopSpeedX)
             {
-                Speed = TopSpeed;
+                SpeedX = TopSpeedX;
             }
+        }
+
+        private void CalculateSpeedY(float force)
+        {
+            //_airTime = _airTime + (float)gameTime.ElapsedGameTime.TotalSeconds;
+            //jumpGravity = _airTime * Gravity;
+            //JumpForce = JumpForce - jumpGravity;
+            SpeedY = SpeedY - (force - Gravity);
         }
 
         private void Jump()
         {
-            if (CurrentAccelerationDirection == DirectionEnum.Right || CurrentAccelerationDirection == DirectionEnum.UpRight)
-            {
-                CurrentAccelerationDirection = DirectionEnum.UpRight;
-            }
-            else if (CurrentAccelerationDirection == DirectionEnum.Left || CurrentAccelerationDirection == DirectionEnum.UpLeft)
-            {
-                CurrentAccelerationDirection = DirectionEnum.UpLeft;
-            }
-            else
-            {
-                CurrentAccelerationDirection = DirectionEnum.Up;
-            }
+            _inAir = true;
+            CalculateSpeedY(JumpForce);
         }
 
         private void Move(GameTime gameTime)
         {
-            float jumpGravity = 0F;
             switch (CurrentAccelerationDirection)
             {
-                case DirectionEnum.Up:
-                    _airTime = _airTime + (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    jumpGravity = _airTime * Gravity;
-                    JumpForce = JumpForce - jumpGravity;
-                    MoveUp(JumpForce, gameTime);
-                    break;
-                case DirectionEnum.UpRight:
-                    _airTime = _airTime + (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    jumpGravity = _airTime * Gravity;
-                    JumpForce = JumpForce - jumpGravity;
-                    MoveUp(JumpForce, gameTime);
-                    MoveRight(Speed, gameTime);
-                    break;
-                case DirectionEnum.UpLeft:
-                    _airTime = _airTime + (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    jumpGravity = _airTime * Gravity;
-                    JumpForce = JumpForce - jumpGravity;
-                    MoveUp(JumpForce, gameTime);
-                    MoveLeft(Speed, gameTime);
-                    break;
                 case DirectionEnum.Right:
-                    MoveRight(Speed, gameTime);
+                    MoveRight(SpeedX, gameTime);
                     break;
                 case DirectionEnum.Left:
-                    MoveLeft(Speed, gameTime);
+                    MoveLeft(SpeedX, gameTime);
                     break;
                 default:
                     break;

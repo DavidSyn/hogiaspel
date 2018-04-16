@@ -16,9 +16,9 @@ namespace HogiaSpel.Entities
         {
             Id = Guid.NewGuid();
             Active = true;
-            Speed = 0;
-            BaseSpeed = 0;
-            TopSpeed = 0;
+            SpeedX = 0;
+            BaseSpeedX = 0;
+            TopSpeedX = 0;
             Acceleration = 0;
             CurrentAccelerationDirection = DirectionEnum.NoDirection;
 

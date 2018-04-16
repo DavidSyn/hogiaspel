@@ -10,9 +10,9 @@ namespace HogiaSpel.Entities
     {
         Guid Id { get; }
         float Gravity { get; }
-        float Speed { get; }
-        float BaseSpeed { get; }
-        float TopSpeed { get; }
+        float SpeedX { get; }
+        float BaseSpeedX { get; }
+        float TopSpeedX { get; }
         float Acceleration { get; }
         DirectionEnum CurrentAccelerationDirection { get; }
         bool Active { get; }
