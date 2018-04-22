@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using HogiaSpel.Enums;
 using HogiaSpel.CollisionDetection;
 using HogiaSpel.Extensions;
+using System.Linq;
 
 namespace HogiaSpel.Entities.Blocks
 {
@@ -14,10 +15,14 @@ namespace HogiaSpel.Entities.Blocks
             Id = Guid.NewGuid();
             Active = true;
             SpeedX = 0;
-            BaseSpeedX = 0;
-            TopSpeedX = 0;
-            Acceleration = 0;
+            SpeedY = 0;
+            JumpForce = 0;
+            BaseSpeedX = 140;
+            TopSpeedX = 500;
+            Acceleration = 1.015f;
             CurrentAccelerationDirection = DirectionEnum.NoDirection;
+            InAir = false;
+            AirTime = 0f;
 
             var sprites = Sprites.Instance;
             SpriteHandler = new SpriteHandler(position);
@@ -35,36 +40,101 @@ namespace HogiaSpel.Entities.Blocks
 
         public override void Update(GameTime gameTime)
         {
-            MoveDown(Gravity, gameTime);
+            if (InAir)
+            {
+                CalculateSpeedY(JumpForce, gameTime);
+                MoveUp(SpeedY, gameTime);
+            }
 
             var grid = CollisionGrid.Instance;
             CollisionCellPositions = grid.UpdateCellPosition(this);
             SpriteHandler.Update(gameTime);
         }
 
+        private void CalculateSpeedY(float upwardsForce, GameTime gameTime)
+        {
+            AirTime = AirTime + (float)gameTime.ElapsedGameTime.TotalSeconds;
+            var jumpGravity = AirTime * Gravity;
+            SpeedY = upwardsForce - jumpGravity;
+        }
+
+        private void StayOnGround(GameTime gameTime)
+        {
+            if (SpeedY < 0)
+            {
+                float speed = SpeedY * -1f;
+                MoveUp(speed, gameTime);
+            }
+            else
+            {
+                MoveUp(SpeedY, gameTime);
+            }
+            SpeedY = 0f;
+            JumpForce = 0f;
+            InAir = false;
+            AirTime = 0f;
+            CurrentAccelerationDirection = DirectionEnum.NoDirection;
+        }
+
         public override void CheckCollision(GameTime gameTime)
         {
             var grid = CollisionGrid.Instance;
-            foreach (var entity in grid.GetEntitiesWithinCell(CollisionCellPositions))
+            var collisionOnGround = false;
+            var entitiesWithinCell = grid.GetEntitiesWithinCell(CollisionCellPositions);
+
+            var player = entitiesWithinCell.Where(x => x is PlayerAvatar);
+            if (player.Any())
             {
-                if (Id != entity.Id)
+                foreach (var entity in player)
                 {
-                    if (entity is PlayerAvatar)
+                    if (Id != entity.Id)
                     {
                         HandlePlayerAvatarCollision(gameTime, entity);
                     }
-                    if (entity is IBlock)
+                }
+            }
+
+            var blocks = entitiesWithinCell.Where(x => x is IBlock);
+            if (blocks.Any())
+            {
+                foreach (var entity in blocks)
+                {
+                    if (Id != entity.Id)
                     {
-                        if (Rectangle.Intersects(entity.Rectangle))
+                        if (entity is IBlock)
                         {
-                            if (Rectangle.CollisionDown(entity.Rectangle))
-                            {
-                                MoveUp(Gravity, gameTime);
-                            }
+                            HandleBlockCollision(gameTime, entity);
                         }
                     }
                 }
             }
+            else
+            {
+                collisionOnGround = false;
+            }
+
+            if (!collisionOnGround)
+            {
+                InAir = true;
+            }
+        }
+
+        private bool HandleBlockCollision(GameTime gameTime, IEntity entity)
+        {
+            if (Rectangle.Intersects(entity.Rectangle))
+            {
+                if (Rectangle.CollisionDown(entity.Rectangle))
+                {
+                    StayOnGround(gameTime);
+
+                    if (!Rectangle.CollisionLeft(entity.Rectangle) || !Rectangle.CollisionRight(entity.Rectangle))
+                    {
+
+                    }
+                }
+                return true;
+            }
+            return false;
         }
 
         private void HandlePlayerAvatarCollision(GameTime gameTime, IEntity entity)
@@ -72,7 +142,11 @@ namespace HogiaSpel.Entities.Blocks
             if (Rectangle.Intersects(entity.Rectangle))
             {
                 var collisionDepth = Rectangle.GetIntersectionDirection(entity.Rectangle);
-                MoveRight(collisionDepth.X);
+                if (collisionDepth.Y == 63)
+                {
+                    MoveRight(collisionDepth.X);
+                }
+                
             }
         }
     }

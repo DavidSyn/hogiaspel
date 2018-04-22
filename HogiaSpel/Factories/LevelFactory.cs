@@ -48,6 +48,10 @@ namespace HogiaSpel.Factories
             EntityFactory.CreateEntity(new MetalBlock(), new Vector2(1072, 400));
             EntityFactory.CreateEntity(new MetalBlock(), new Vector2(1136, 400));
             EntityFactory.CreateEntity(new DiamondBlock(), new Vector2(1200, 400));
+
+            EntityFactory.CreateEntity(new MetalBlock(), new Vector2(1200, 336));
+
+            EntityFactory.CreateEntity(new DiamondBlock(), new Vector2(1200, 272));
         }
     }
 }
