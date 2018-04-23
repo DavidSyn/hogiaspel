@@ -15,7 +15,7 @@ namespace HogiaSpel.Entities
         public float TopSpeedX { get; protected set; }
         public float Acceleration { get; protected set; }
         public float SpeedY { get; protected set; }
-        public float Gravity { get { return 700.0f; } }
+        public float Gravity { get { return 1.0f; } }
         public bool InAir { get; protected set; }
         public float AirTime { get; protected set; }
         public float JumpForce { get; protected set; }
@@ -34,7 +34,8 @@ namespace HogiaSpel.Entities
 
             float x = SpriteHandler.Position.X;
             float y = SpriteHandler.Position.Y;
-            y = SpriteHandler.Position.Y - (speed * deltatime);
+            y = (int)(SpriteHandler.Position.Y - (speed * deltatime));
+
             SpriteHandler.Position = new Vector2(x, y);
         }
 
@@ -44,7 +45,7 @@ namespace HogiaSpel.Entities
 
             float x = SpriteHandler.Position.X;
             float y = SpriteHandler.Position.Y;
-            y = SpriteHandler.Position.Y + (speed * deltatime);
+            y = (int)(SpriteHandler.Position.Y + (speed *deltatime));
             SpriteHandler.Position = new Vector2(x, y);
         }
 

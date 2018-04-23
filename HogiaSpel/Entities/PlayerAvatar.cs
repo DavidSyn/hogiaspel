@@ -12,7 +12,7 @@ namespace HogiaSpel.Entities
 {
     public class PlayerAvatar : AbstractEntity
     {
-        private static float JUMPFORCE_DEFAULT = 400f;
+        private static float JUMPFORCE_DEFAULT = 10f;
         private InputHandler _inputHandler;
         private DirectionEnum _pushDirection;
         
@@ -103,7 +103,7 @@ namespace HogiaSpel.Entities
 
             if (!collisionOnGround)
             {
-                InAir = true;
+                //InAir = true;
             }
         }
 
@@ -128,7 +128,7 @@ namespace HogiaSpel.Entities
         {
             if (Rectangle.CollisionDown(entity.Rectangle))
             {
-                StayOnGround(gameTime);
+                StayOnGround(entity, gameTime);
 
                 if (!Rectangle.CollisionLeft(entity.Rectangle) || !Rectangle.CollisionRight(entity.Rectangle))
                 {
@@ -155,7 +155,7 @@ namespace HogiaSpel.Entities
         {
             if (Rectangle.CollisionDown(entity.Rectangle))
             {
-                StayOnGround(gameTime);
+                StayOnGround(entity, gameTime);
             }
 
             if (Rectangle.CollisionLeft(entity.Rectangle) || Rectangle.CollisionRight(entity.Rectangle))
@@ -182,8 +182,11 @@ namespace HogiaSpel.Entities
             }
         }
 
-        private void StayOnGround(GameTime gameTime)
+        private void StayOnGround(IEntity entity, GameTime gameTime)
         {
+            //var collisionDepth = Rectangle.GetIntersectionDirection(entity.Rectangle);
+            //MoveUp(collisionDepth.Y);
+
             if (SpeedY < 0)
             {
                 float speed = SpeedY * -1f;
@@ -314,15 +317,17 @@ namespace HogiaSpel.Entities
 
         private void CalculateSpeedY(float upwardsForce, GameTime gameTime)
         {
-            AirTime = AirTime + (float)gameTime.ElapsedGameTime.TotalSeconds;
-            var jumpGravity = AirTime * Gravity;
-            SpeedY = upwardsForce - jumpGravity;
+            //AirTime = AirTime + (float)gameTime.ElapsedGameTime.TotalSeconds;
+            //var jumpGravity = AirTime * Gravity;
+            //SpeedY = upwardsForce - jumpGravity;
+
+            SpeedY = SpeedY - Gravity;
         }
 
         private void Jump()
         {
             InAir = true;
-            JumpForce = JUMPFORCE_DEFAULT;
+            SpeedY = JUMPFORCE_DEFAULT;
         }
 
         private void Move(GameTime gameTime)
