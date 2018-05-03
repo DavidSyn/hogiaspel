@@ -11,5 +11,7 @@ namespace HogiaSpel.Entities
         void MoveRight(float speed, GameTime gameTime);
 
         void MoveLeft(float speed, GameTime gameTime);
+
+        void SetPosition(float x, float y);
     }
 }

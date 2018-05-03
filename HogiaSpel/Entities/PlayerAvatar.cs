@@ -12,7 +12,7 @@ namespace HogiaSpel.Entities
 {
     public class PlayerAvatar : AbstractEntity
     {
-        private static float JUMPFORCE_DEFAULT = 10f;
+        private static float JUMPFORCE_DEFAULT = 600f;
         private InputHandler _inputHandler;
         private DirectionEnum _pushDirection;
         
@@ -103,7 +103,7 @@ namespace HogiaSpel.Entities
 
             if (!collisionOnGround)
             {
-                //InAir = true;
+                InAir = true;
             }
         }
 
@@ -126,16 +126,6 @@ namespace HogiaSpel.Entities
 
         private void BlockCollision(IEntity entity, GameTime gameTime)
         {
-            if (Rectangle.CollisionDown(entity.Rectangle))
-            {
-                StayOnGround(entity, gameTime);
-
-                if (!Rectangle.CollisionLeft(entity.Rectangle) || !Rectangle.CollisionRight(entity.Rectangle))
-                {
-
-                }
-            }
-
             if (Rectangle.CollisionRight(entity.Rectangle) || Rectangle.CollisionLeft(entity.Rectangle))
             {
                 if (CurrentAccelerationDirection == DirectionEnum.Left)
@@ -147,6 +137,16 @@ namespace HogiaSpel.Entities
                 {
                     MoveLeft(SpeedX, gameTime);
                     SpeedX = BaseSpeedX;
+                }
+            }
+
+            if (Rectangle.CollisionDown(entity.Rectangle))
+            {
+                StayOnGround(entity, gameTime);
+
+                if (!Rectangle.CollisionLeft(entity.Rectangle) || !Rectangle.CollisionRight(entity.Rectangle))
+                {
+
                 }
             }
         }
@@ -184,22 +184,11 @@ namespace HogiaSpel.Entities
 
         private void StayOnGround(IEntity entity, GameTime gameTime)
         {
-            //var collisionDepth = Rectangle.GetIntersectionDirection(entity.Rectangle);
-            //MoveUp(collisionDepth.Y);
+            SetPosition(SpriteHandler.Position.X, (entity.Rectangle.Top - Rectangle.Height));
 
-            if (SpeedY < 0)
-            {
-                float speed = SpeedY * -1f;
-                MoveUp(speed, gameTime);
-            }
-            else
-            {
-                MoveUp(SpeedY, gameTime);
-            }
             SpeedY = 0f;
             JumpForce = 0f;
             InAir = false;
-            AirTime = 0f;
         }
 
         private void HandleSpriteState()
